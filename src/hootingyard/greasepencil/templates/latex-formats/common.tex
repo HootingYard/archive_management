@@ -1,0 +1,62 @@
+\settrimmedsize{\stockheight}{\stockwidth}{*}
+\setlength{\trimtop}{0pt}
+\setlength{\trimedge}{\stockwidth}
+\addtolength{\trimedge}{-\paperwidth}
+\linespread{1.1}
+\tolerance 1414
+\hbadness 1414
+\emergencystretch 1.5em
+\hfuzz 0.3pt
+\widowpenalty=10000
+\clubpenalty=10000
+%\widowpenalty=4000
+%\clubpenalty=4000
+%\finalhyphendemerits=10000
+\setlength{\parskip}{0pt}
+\normalfont
+
+\setlxvchars\setxlvchars
+\settypeblocksize{*}{.75\stockwidth}{1.32}
+\setlrmargins{*}{39.36942pt}{*} % ...or thereabouts
+\setheaderspaces{*}{*}{.125}
+\setulmargins{*}{*}{1.618}
+\checkandfixthelayout
+
+\newlength{\AfterFancyBreakMin}
+\setlength{\AfterFancyBreakMin}{3\baselineskip}
+\newcommand{\interlude}[1]{\plainfancybreak{\AfterFancyBreakMin}{1}{#1}}
+\setlength{\cftbeforechapterskip}{0pt}
+\makeatletter\renewcommand{\printchapternum}{\chapnumfont
+\numtoName{\c@chapter}}
+\makeatother
+\setlength{\cftbeforepartskip}{\baselineskip}
+\setlength{\cftchapternumwidth}{.5\textwidth}
+%\frenchspacing
+\makepagestyle{ebook}
+\makeevenhead{ebook}%
+{\normalfont\thepage%\ \thepart
+}{\normalfont\scshape\thetitle}{}
+
+\makeoddhead{ebook}%
+{}{\normalfont\scshape\theauthor}{%\numtoName{\thechapter}\
+\normalfont\thepage}
+\pagestyle{ebook}
+\setlength{\parindent}{1.5 em}
+\aliaspagestyle{title}{empty}
+\newcommand{\emphqitem}[2]{\qitem{\textit{#1}}{#2}}
+\makeatletter\renewcommand{\@maketitle}{%
+\let\footnote\@mem@titlefootkill
+\newpage
+\null
+\vskip 2em%
+\vspace*{\droptitle}
+\maketitlehooka
+{\@bspretitle \HUGE\scshape\@title \@bsposttitle}
+\maketitlehookb
+{\@bspreauthor \normalfont\scshape\@author \@bspostauthor}
+\maketitlehookc
+\maketitlehookd
+\par
+\vskip 1.5em}
+\makeatother
+

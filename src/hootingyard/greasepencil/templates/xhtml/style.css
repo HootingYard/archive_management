@@ -1,0 +1,27 @@
+/* Basic CSS style sheet, a placeholder to use when viewing the raw XHTML */
+
+h1 { text-transform: uppercase; }
+
+body { margin-left: 20%; margin-right: 25%; }
+
+a { text-decoration:none; }
+
+strong.footnote { color:red; }
+
+blockquote { margin-left: 5%; margin-right: 5%; }
+
+p             { margin-top:0; margin-bottom:0; text-indent:2em; line-height:1.3em; text-align:justify; }
+p.center      { text-align:center; }
+p.noindent    { text-indent:0;  }
+p.linebreaks  { text-indent:0; margin-left: 2em; margin-top: 0.5em; margin-bottom: 0.5em; }
+p.textbreak   { text-indent: 0; text-align: center; margin-top: 1em; }
+p.postwebpage { margin-top:4mm; text-indent:0; font-size: 50%; }
+
+div.illustration { margin:2em; }
+p.images         { text-align:center; }
+p.caption        { margin-top:1mm; font-size:90%; text-align:center; font-weight:bold; text-indent:0; }
+img              { display: block; margin-left: auto; margin-right: auto  }
+img.size-full    { width:80mm; }
+img.size-medium  { width:60mm; }
+
+/* end */

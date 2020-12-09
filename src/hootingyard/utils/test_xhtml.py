@@ -20,16 +20,16 @@ from lxml.etree import _Element  # this is okay to do, it is just used for the t
 __all__ = ['run']
 
 
-XMLNS = {'xhtml': 'http://www.w3.org/1999/xhtml'}
+XMLNS = {'xhtml': 'http://www.w3.org/1999/xhtml'}  # XML namespace table
 
 
 def main():
     # note: it's okay to use Path as an argument type
     parser = ArgumentParser(description=__doc__, formatter_class=RawTextHelpFormatter)
     # noinspection PyTypeChecker
-    parser.add_argument('-d', '--dtd', metavar='DTD', type=Path, help='DTD file to test against', required=True)
-    parser.add_argument('-i', '--images', action='store_true', help='also test images')
-    parser.add_argument('-v', '--verbose', action='store_true', help='also test images')
+    parser.add_argument('-d', '--dtd', metavar='DTD', type=Path, help='the DTD file to test against', required=True)
+    parser.add_argument('-i', '--images', action='store_true', help='also test image links')
+    parser.add_argument('-v', '--verbose', action='store_true', help='print file names as they are tested')
     # noinspection PyTypeChecker
     parser.add_argument('files', type=Path, metavar='XHTML', nargs='*', help='XHTML files to test')
     args = parser.parse_args()
@@ -41,7 +41,6 @@ def main():
         exit(1) 
     elif args.verbose:
         print(f"SUCCESS")
-        
 
 
 def run(xhtml_files: List[Path], dtd_file: Path, verbose: bool, images: bool) -> bool:
@@ -63,9 +62,6 @@ def test(xhtml_file: Path, dtd: DTD, images: bool, verbose: bool) -> bool:
         print(xhtml_file)
     success = False
     try:
-        with open(xhtml_file, mode='rb') as f:
-            text = f.read()
-        #document = XML(xhtml_file, XMLParser(resolve_entities=False))
         document = parse(source=str(xhtml_file), parser=XMLParser(resolve_entities=False)).getroot()
         dtd.assertValid(document)
     except IOError as e:

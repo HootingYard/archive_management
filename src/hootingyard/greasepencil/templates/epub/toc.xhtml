@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta name="generator" content="Scrawled in GreasePencil" />
+  <title>Contents</title>
+  <meta name="author" content="{{author|safe}}" />
+  <meta name="description" content="{{description|safe}}" />
+  <meta name="language" content="{{language|safe}}" />
+  <meta name="generator" content="Scrawled in GreasePencil" />
+  <meta name="date" content="{{iso_time|safe}}" />
+  <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+  <link href="../Styles/style.css" rel="stylesheet" type="text/css" />
+</head>
+<body class="toc">
+  <h1>Contents</h1>
+  <ol class="contents"> 
+{% for item in index %}<li><a href="{{item.href}}">{{item.heading|safe}}</a></li>
+{% endfor %}
+  </ol>
+</body>
+</html>
