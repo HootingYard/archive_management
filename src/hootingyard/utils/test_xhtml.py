@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """ This tests that XHTML files match a DTD (typically keyml.dtd). 
 
-Optionally, relative image links can be checked to see if they are broken.
+Optionally, relative links can be checked to see if they are broken,
+and relatively linked images can be checked for validity.
 
 Example: python3 test_xhtml.py -i -d keyml.dtd bigbook/Text/[0-9]*.xhtml
 """
@@ -29,12 +30,13 @@ def main():
     # noinspection PyTypeChecker
     parser.add_argument('-d', '--dtd', metavar='DTD', type=Path, help='the DTD file to test against', required=True)
     parser.add_argument('-i', '--images', action='store_true', help='also test image links')
+    parser.add_argument('-l', '--links', action='store_true', help='also test relative href links')
     parser.add_argument('-v', '--verbose', action='store_true', help='print file names as they are tested')
     # noinspection PyTypeChecker
     parser.add_argument('files', type=Path, metavar='XHTML', nargs='*', help='XHTML files to test')
     args = parser.parse_args()
 
-    success = run(args.files, args.dtd, args.verbose, args.images)
+    success = run(args.files, args.dtd, args.verbose, args.images, args.links)
     if not success:
         if args.verbose:
             print(f"FAILURE")
@@ -43,7 +45,7 @@ def main():
         print(f"SUCCESS")
 
 
-def run(xhtml_files: List[Path], dtd_file: Path, verbose: bool, images: bool) -> bool:
+def run(xhtml_files: List[Path], dtd_file: Path, verbose: bool, images: bool, links: bool) -> bool:
     success = False
     try:
         dtd = DTD(file=str(dtd_file))
@@ -52,12 +54,12 @@ def run(xhtml_files: List[Path], dtd_file: Path, verbose: bool, images: bool) ->
     else:
         success = True
         for file in xhtml_files:
-            if not test(file, dtd, images, verbose):
+            if not test(file, dtd, images, links, verbose):
                 success = False        
     return success
 
 
-def test(xhtml_file: Path, dtd: DTD, images: bool, verbose: bool) -> bool:
+def test(xhtml_file: Path, dtd: DTD, images: bool, links: bool, verbose: bool) -> bool:
     if verbose:
         print(xhtml_file)
     success = False
@@ -71,10 +73,11 @@ def test(xhtml_file: Path, dtd: DTD, images: bool, verbose: bool) -> bool:
     except DocumentInvalid as e:
         print(str(e.error_log), file=stderr)
     else:
+        success = True
         if images:
-            success = test_images(xhtml_file, document, verbose)
-        else:
-            success = True
+            success = success and test_images(xhtml_file, document, verbose)
+        if links:
+            success = success and test_links(xhtml_file, document, verbose)
     return success
 
 
@@ -84,15 +87,31 @@ def test_images(xhtml_file: Path, xhtml: _Element, verbose: bool) -> bool:
     for img in imgs:
         img: _Element
         src = str(img.attrib['src'])
-        if not src.startswith('http'):
+        if ':' not in src:
             img_path = xhtml_file.parent / Path(url2pathname(src))
             if verbose:
-                print(img_path)
+                print('\t', img_path)
             try:
                 im = Image.open(img_path)
                 im.verify()
             except IOError:
                 print(f"{xhtml_file}: broken image {img_path}", file=stderr)
+                success = False
+    return success
+
+
+def test_links(xhtml_file: Path, xhtml: _Element, verbose: bool) -> bool:
+    success = True
+    imgs: Any = xhtml.xpath('//xhtml:a', namespaces=XMLNS)
+    for img in imgs:
+        img: _Element
+        href = str(img.attrib['href'])
+        if ':' not in href:
+            path = xhtml_file.parent / Path(url2pathname(href))
+            if verbose:
+                print('\t', path)
+            if not path.exists():
+                print(f"{xhtml_file}: broken relative link {path}", file=stderr)
                 success = False
     return success
 
