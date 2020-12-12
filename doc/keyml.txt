@@ -13,6 +13,11 @@ files matching this DTD. The Hooting Yard text archives should only be saved in 
 (KeyML can expanded if necessary.)  The utility 'test_xhtml.py' can be used to
 check that files comply with KeyML.
 
+See:
+   https://github.com/HootingYard/archive_management/blob/main/src/hootingyard/utils/keyml.dtd
+   https://github.com/HootingYard/archive_management/blob/main/src/hootingyard/utils/test_xhtml.py
+
+
 Below is the KeyML subset. The indentation indicates nesting, dots indicates class. 
 Note that KeyML does not allow multiple classes in a single class attribute, 
 e.g. <p class="noindent center"> will be rejected. 
