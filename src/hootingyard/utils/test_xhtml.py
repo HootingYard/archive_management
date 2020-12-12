@@ -18,10 +18,19 @@ from lxml.etree import XMLParser, DTD, DocumentInvalid, DTDParseError, XMLSyntax
 from lxml.etree import _Element  # this is okay to do, it is just used for the type interface
 
 
-__all__ = ['run']
+__all__ = []
 
 
 XMLNS = {'xhtml': 'http://www.w3.org/1999/xhtml'}  # XML namespace table
+
+class Settings:
+    dtd: Path
+    verbose: bool
+    images: bool
+    links: bool
+    files: List[Path]
+
+settings = Settings()
 
 
 def main():
@@ -34,9 +43,9 @@ def main():
     parser.add_argument('-v', '--verbose', action='store_true', help='print file names as they are tested')
     # noinspection PyTypeChecker
     parser.add_argument('files', type=Path, metavar='XHTML', nargs='*', help='XHTML files to test')
-    args = parser.parse_args()
+    args = parser.parse_args(namespace=settings)
 
-    success = run(args.files, args.dtd, args.verbose, args.images, args.links)
+    success = run(args.files, args.dtd, args.images, args.links)
     if not success:
         if args.verbose:
             print(f"FAILURE")
@@ -45,7 +54,7 @@ def main():
         print(f"SUCCESS")
 
 
-def run(xhtml_files: List[Path], dtd_file: Path, verbose: bool, images: bool, links: bool) -> bool:
+def run(xhtml_files: List[Path], dtd_file: Path, images: bool, links: bool) -> bool:
     success = False
     try:
         dtd = DTD(file=str(dtd_file))
@@ -54,13 +63,13 @@ def run(xhtml_files: List[Path], dtd_file: Path, verbose: bool, images: bool, li
     else:
         success = True
         for file in xhtml_files:
-            if not test(file, dtd, images, links, verbose):
+            if not test(file, dtd, images, links):
                 success = False        
     return success
 
 
-def test(xhtml_file: Path, dtd: DTD, images: bool, links: bool, verbose: bool) -> bool:
-    if verbose:
+def test(xhtml_file: Path, dtd: DTD, images: bool, links: bool) -> bool:
+    if settings.verbose:
         print(xhtml_file)
     success = False
     try:
@@ -75,13 +84,13 @@ def test(xhtml_file: Path, dtd: DTD, images: bool, links: bool, verbose: bool) -
     else:
         success = True
         if images:
-            success = success and test_images(xhtml_file, document, verbose)
+            success = success and test_images(xhtml_file, document)
         if links:
-            success = success and test_links(xhtml_file, document, verbose)
+            success = success and test_links(xhtml_file, document)
     return success
 
 
-def test_images(xhtml_file: Path, xhtml: _Element, verbose: bool) -> bool:
+def test_images(xhtml_file: Path, xhtml: _Element) -> bool:
     success = True
     imgs: Any = xhtml.xpath('//xhtml:img', namespaces=XMLNS)
     for img in imgs:
@@ -89,7 +98,7 @@ def test_images(xhtml_file: Path, xhtml: _Element, verbose: bool) -> bool:
         src = str(img.attrib['src'])
         if ':' not in src:
             img_path = xhtml_file.parent / Path(url2pathname(src))
-            if verbose:
+            if settings.verbose:
                 print('\t', img_path)
             try:
                 im = Image.open(img_path)
@@ -100,7 +109,7 @@ def test_images(xhtml_file: Path, xhtml: _Element, verbose: bool) -> bool:
     return success
 
 
-def test_links(xhtml_file: Path, xhtml: _Element, verbose: bool) -> bool:
+def test_links(xhtml_file: Path, xhtml: _Element) -> bool:
     success = True
     imgs: Any = xhtml.xpath('//xhtml:a', namespaces=XMLNS)
     for img in imgs:
@@ -108,7 +117,7 @@ def test_links(xhtml_file: Path, xhtml: _Element, verbose: bool) -> bool:
         href = str(img.attrib['href'])
         if ':' not in href:
             path = xhtml_file.parent / Path(url2pathname(href))
-            if verbose:
+            if settings.verbose:
                 print('\t', path)
             if not path.exists():
                 print(f"{xhtml_file}: broken relative link {path}", file=stderr)

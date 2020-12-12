@@ -18,7 +18,7 @@
     type CDATA #FIXED "text/css"
 >
 
-<!ELEMENT body (div?, h1, (p | div | blockquote | ol | ul)+)>
+<!ELEMENT body (div?, h1, (h2 | p | div | blockquote | ol | ul)+)>
 <!ATTLIST body class CDATA #IMPLIED>
 
 <!ELEMENT ol (li+) >
@@ -26,10 +26,13 @@
 <!ELEMENT li (#PCDATA | p | ol | ul)* >
 
 <!ELEMENT h1 (#PCDATA | em)*>
-<!ATTLIST h1   id CDATA #REQUIRED  class CDATA #IMPLIED>
+<!ATTLIST h1 class CDATA #IMPLIED>
+
+<!ELEMENT h2 (#PCDATA | em)*>
+<!ATTLIST h2 class CDATA #IMPLIED>
 
 <!ELEMENT p (#PCDATA | em | strong | del | br | img | a | sup | small)* >
-<!ATTLIST p class (noindent | center | verse | linebreaks | breakabove | textbreak | imagerow | caption | postwebpage) #IMPLIED>
+<!ATTLIST p class (noindent | center | verse | linebreaks | breakabove | textbreak | imagerow | caption | postwebpage | byline) #IMPLIED>
 
 
 <!ELEMENT blockquote (p | div | blockquote | ol | ul)+ >

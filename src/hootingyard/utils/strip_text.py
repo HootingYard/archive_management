@@ -20,24 +20,22 @@ from lxml.html import HtmlElement
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from typing import Dict
 
+__all__ = []
 
-POST_GLOB = '[0-9][0-9][0-9][0-9][0-9]_*.xhtml'
 
-
-def element_text(element: HtmlElement, xpath: str) -> str:
-    elements = element.xpath(xpath)
-    if not elements:
-        return ''
+def main():
+    parser = ArgumentParser(description=__doc__, formatter_class=RawDescriptionHelpFormatter)
+    parser.add_argument('source', type=Path, help='a directory containing XHTML files')
+    parser.add_argument('-o', '--output', type=Path, help='output directory for JSON files', required=True)
+    parser.add_argument('-d', '--overwrite', action='store_true', help='overwrite old output files')
+    parser.add_argument('-x', '--nopunctuation', action='store_true', help='remove punctuation')
+    parser.add_argument('-v', '--verbose', action='store_true', help='print processed path names')
+    args = parser.parse_args()
+    if args.source.exists():
+        run(args.source, args.output, args.overwrite, args.nopunctuation, args.verbose)
     else:
-        return elements[0].text_content()
-
-
-def process_text(html: HtmlElement, no_punctuation: bool) -> str:
-    text = element_text(html, '//body').strip()
-    text = re.sub(r'\s+', ' ', text)
-    if no_punctuation:
-        text = re.sub(r"[^ \w']", '', text)
-    return text
+        parser.print_help()
+        sys.exit(1)
 
 
 def run(xhtml_dir: Path, 
@@ -72,19 +70,23 @@ def run(xhtml_dir: Path,
             json.dump(data, file)
 
 
-def main():
-    parser = ArgumentParser(description=__doc__, formatter_class=RawDescriptionHelpFormatter)
-    parser.add_argument('source', type=Path, help='a directory containing XHTML files')
-    parser.add_argument('-o', '--output', type=Path, help='output directory for JSON files', required=True)
-    parser.add_argument('-d', '--overwrite', action='store_true', help='overwrite old output files')
-    parser.add_argument('-x', '--nopunctuation', action='store_true', help='remove punctuation')
-    parser.add_argument('-v', '--verbose', action='store_true', help='print processed path names')
-    args = parser.parse_args()
-    if args.source.exists():
-        run(args.source, args.output, args.overwrite, args.nopunctuation, args.verbose)
+POST_GLOB = '[0-9][0-9][0-9][0-9][0-9]_*.xhtml'
+
+
+def element_text(element: HtmlElement, xpath: str) -> str:
+    elements = element.xpath(xpath)
+    if not elements:
+        return ''
     else:
-        parser.print_help()
-        sys.exit(1)
+        return elements[0].text_content()
+
+
+def process_text(html: HtmlElement, no_punctuation: bool) -> str:
+    text = element_text(html, '//body').strip()
+    text = re.sub(r'\s+', ' ', text)
+    if no_punctuation:
+        text = re.sub(r"[^ \w']", '', text)
+    return text
 
 
 if __name__ == '__main__':

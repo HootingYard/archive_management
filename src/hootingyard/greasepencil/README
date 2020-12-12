@@ -147,9 +147,9 @@ variables in a book's Makefile.
               └── ...
 
 
-OTHER BOOKS DIRECTORY
+BOOKS-IN-LATEX DIRECTORY
 
-Otherbooks contains the workspaces were not compiled by Grease Pencil.
+This contains the workspaces were not compiled by Grease Pencil.
 'Impugned By A Peasant Other Stories' was compiled using a TeX-only 
 method that predated Grease Pencil. 'The Immense Duckpond Pamphlet' 
 (an unofficial, undistributed ebook) was prepared using Sigil. 
