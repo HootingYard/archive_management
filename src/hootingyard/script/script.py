@@ -7,7 +7,7 @@ from typing import Mapping, Union
 
 from bs4 import BeautifulSoup
 
-from hootingyard.config.index.story import Story
+from hootingyard.config.index.story import Story, InvalidStory
 
 log = logging.getLogger(__name__)
 
@@ -92,5 +92,9 @@ class Script:
             text=self.get_text(),
             date=self.get_date(),
         )
-        story.validate()
+        try:
+            story.validate()
+        except InvalidStory:
+            log.exception(f"Cannot generate story for {self.path}.")
+            raise
         return story

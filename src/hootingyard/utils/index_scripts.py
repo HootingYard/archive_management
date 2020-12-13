@@ -14,7 +14,7 @@ def main():
     stories_dirctory: str = get_stories_dirctory()
     for script in get_scripts():
         story = script.get_story()
-        # story.validate()
+        story.validate()
         log.info(f"Writing {story.id}: {story.title}")
         story_filename = f"{story.id}.yaml"
         story_path = os.path.join(stories_dirctory, story_filename)
