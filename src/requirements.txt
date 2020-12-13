@@ -1,3 +1,5 @@
 pyyaml
 dateparser
 pytest
+beautifulsoup4
+black
