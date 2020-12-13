@@ -1,0 +1,110 @@
+\documentclass[openany,final,12pt]{memoir}
+
+\usepackage{fixltx2e} % LaTeX bugfixes
+\usepackage{memhfixc} % Memoir document class bugfixes.
+
+\usepackage{graphicx} % Allow JPEG and PNG illustrations.
+\usepackage{libertine} % Use Libertine fonts XXX doesn't set them up for microtypography like it should.
+\usepackage{microtype} % Apply 'microtypography' to the text.
+\usepackage{fontspec} % Allow TFF fonts to be selected.
+%\usepackage{xunicode} % Use Unicode for accented characters.
+
+
+\usepackage[normalem]{ulem} % For the \sout{...} macro for striking out text.
+\usepackage{alltt} % For the alltt typewriter text environment.
+
+\usepackage[hyphens]{url} % These packages nicely format footnotes that contain URLs.
+\usepackage{ragged2e} % (XXX 'ragged' might not be desirable for long textual footnotes)
+\usepackage[ragged,hang]{footmisc}
+\setlength{\footnotemargin}{0em}
+
+\usepackage{float} % control where figures are placed on the page
+
+\setrmarg{3em plus 1fil} % Give the TOC page numbers a little more space,
+% make the titles than span more than one line right-ragged.
+
+\usepackage[labelformat=empty,justification=centering,font={small,bf},width=.6\textwidth]{caption}
+
+% An environment where parargraphs are separated by blank lines.
+\newenvironment{blockparagraphs}
+   {\begingroup{}\setlength{\parindent}{0pt}\setlength{\parskip}{\baselineskip}}
+   {\endgroup{}}
+
+% These set the page dimensions.
+% current.tex is a copy of lulu.tex or a4.tex, depending on the paper size selected.
+\include{current}
+\include{common}
+
+% These allow control over hypenation:
+\usepackage[UKenglish]{babel}
+\lefthyphenmin=4
+\righthyphenmin=4
+\hyphenpenalty=500
+%\usepackage[none]{hyphenat}
+
+\defaultfontfeatures{Scale=MatchLowercase}
+
+
+% Set the default fonts.
+%\setromanfont[Ligatures=TeX]{Linux Libertine O}
+%\setsansfont[Ligatures=TeX]{Linux Biolinum O}
+% (These are TTF fonts which must be installed on your system.)
+\setmonofont[Ligatures=TeX,Scale=0.75]{Liberation Mono}
+\newfontfamily\operafontfamily{Opera-Lyrics-Smooth}
+
+% Redefine the Memoir macro for printing character headings:
+\renewcommand{\printchaptertitle}[1]{\normalfont\operafontfamily\huge\MakeUppercase{#1}}
+
+% Remove extra space above Memoir chapter headings:
+% \setlength{\beforechapskip}{-\baselineskip}
+
+% XXX I've had to set fonts and sizes for the title page with the
+% \title and \author macros, which doesn't seem right.
+\title{{\operafontfamily\Huge\MakeUppercase{<<title>>}}}
+
+<% if subtitle is defined %>
+\renewcommand{\maketitlehookb}{\begin{center}{\operafontfamily\Huge{<<subtitle>>}}\end{center}}
+<% else %>
+\author{{\operafontfamily\Large{}<<author>>}}
+<% endif %>
+
+
+% The star that breaks sections of text. Whatever you think is decorative.
+\newcommand{\textbreak}[0]{\begin{center}{\large\operafontfamily *}\end{center}}
+
+% Use italic labels in description lists:
+\renewcommand*{\descriptionlabel}[1]{\hspace\labelsep\normalfont\emph{#1}}
+
+\setcounter{tocdepth}{0} % not sure what's going on here
+\setsecnumdepth{part}
+\maxsecnumdepth{part}
+
+%\raggedbottom
+
+\checkandfixthelayout
+
+\pagestyle{plain}
+
+\makeindex
+
+\begin{document}
+
+\frontmatter
+
+\maketitle
+
+\include{copyright}
+\tableofcontents*
+
+\mainmatter
+
+\raggedbottom % XXX not sure if this is doing anything
+
+<% for name in texfiles %>
+\label{<<name>>}
+\include{<<name>>}
+<% endfor %>
+
+\backmatter
+
+\end{document}

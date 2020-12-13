@@ -1,0 +1,83 @@
+/* Hooting Yard website CSS style sheet */
+
+@font-face {
+    font-family: 'Libertine';
+    src: url('../Fonts/LinLibertine_Rah.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Libertine';
+    src: url('../Fonts/LinLibertine_RIah.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'Libertine';
+    src: url('../Fonts/LinLibertine_RBah.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Libertine';
+    src: url('../Fonts/LinLibertine_RBIah.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+}
+
+@font-face { font-family: 'Opera' ;
+             src: url('../Fonts/opera-lyrics-smooth.ttf') format('truetype');
+}
+
+body { font-family: 'Libertine'; margin-left: 20%; margin-right: 25%; }
+
+a             { text-decoration:none; }
+a.internal    { text-decoration:none; }
+a.hootingyard { text-decoration:underline; }
+a.external    { text-decoration:underline; }
+
+h1 { font-weight: normal; font-family: 'Opera'; text-transform: uppercase; text-align: left; }
+h1.plain { text-transform: uppercase; font-family: 'Libertine'; text-align: left; }
+h1.center { margin-top: 2em; font-family: 'Opera'; text-align: center; }
+h2 { font-weight: normal; font-family: 'Opera'; text-transform: uppercase; margin-top: 2em; text-align: left; }
+h2.preen { font-weight: normal; font-family: 'Opera'; text-transform: lowercase; margin-top: 2em; text-align: left; }
+
+blockquote { margin-left: 5%; margin-right: 5%; }
+
+/* this looks good in a browser, but not on an ebook reader: */
+p { font-size: 120%; margin-top:0; margin-bottom:0; text-indent:2em; line-height:1.3em; text-align:justify; }
+/* p { margin-top:0; margin-bottom:0; text-indent:2em; text-align:justify; } */
+
+p.center      { text-indent:0;  text-align:center; }
+p.noindent    { text-indent:0;  }
+p.linebreaks  { text-indent:0; margin-top: 0.5em; margin-bottom: 0.5em; }
+p.breakabove  { text-indent:0; margin-top: 0.5em;  }
+p.postwebpage { text-indent:0; margin-top:4mm; font-size: 60%; }
+p.textbreak   { text-indent: 0; text-align: center; margin-top: 1em; font-family: 'Opera'; }
+p.byline   { font-family: 'Opera'; text-indent: 0; margin-bottom: 2em; text-align: left; }
+
+img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto }
+
+img.aligncenter  {  }
+img.alignleft    {  }
+img.size-full    { width:80mm; }
+img.size-medium  { width:60mm; }
+img.small        { width:15%; }
+img.fullwidth    { width:100%; }
+
+p.caption { margin-top:1mm; font-size:90%; text-align:center; font-weight:bold; text-indent:0; }
+
+div.blockparagraphs p { text-indent:0;  margin-top: 1em; }
+
+div.verse     { margin-left: 5%; margin-right: 5%; margin-bottom: 1em; }
+div.verse p   { text-indent: 0; margin-top: 1em; text-align:left; font-style:italic; }
+
+div.illustration { margin:2em;  }
+div.illustrationfullwidth { width: 100%;  }
+
+strong.footnote { color:red; }
+   
+/* end */

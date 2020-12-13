@@ -1,0 +1,335 @@
+────────────────────────────────────────────────────────────────────────────────────────────────
+GREASEPENCIL: writes on glass
+ 
+
+A set of makefiles, scripts and templates for generating MOBI, EPUB and
+PDF Hooting Yard books from a subset of XHTML.
+
+The "Big Book of Key" is the archive of all Hooting Yard Prose posts.
+Anthologies can be carved off this. Doing "make update" in its directory
+will download all the Hooting Yard prose archive pages, add new posts to
+the Book, and generate a new index. The "code/update-big-book.py"
+script contains the interesting code that cleans blog post XHTML.
+
+Expect "update-big-book.py" to do an imperfect job, it scrapes very
+ugly Wordpress HTML. Some modification of the scripts and hand editing
+of the XHTML has always been necessary to get reasonable results.
+"update-big-book.py" will not replace an existing XHTML file, so it
+is safe to hand-edit the XHTML.
+
+Each book's Makefile provides a few variables, and includes
+'code/Makefile.inc', where all the real work is done. Examine
+'books/anthology6' and see BOOK DATA DIRECTORIES below.
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────
+Requirements:
+
+epubcheck    https://github.com/IDPF/epubcheck
+kindlegen    http://www.amazon.com/gp/feature.html?ie=UTF8&docId=1000765211
+             (Install these in your /usr/local/bin)
+Python 2.7
+lxml         Python XML library, see http://lxml.de/
+PIL          Python Image Library
+Jinja2       a text template engine
+
+LuaTeX       Unicode TeX, comes with TeXLive 2011
+
+HTML Tidy
+
+Linux Libertine      Fonts. http://www.linuxlibertine.org/
+Opera-Lyrics-Smooth  http://www.fontspace.com/maltedmedia/opera-lyrics-smooth
+
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────
+SCRIPTS
+
+Makefile.inc               where all the real EPUB and LaTeX work is done
+
+update-big-book.py         contains the interesting code that cleans blog post XHTML
+download-prose-archive.py  downloads hootingyard.org Wordpress archive pages
+xhtml-to-xetex.py          converts a book to LaTeX
+grease.py                  library of XML, text and JSON functions
+epub-copy-and-index.py     places XHTML and images files in an EPUB directory, makes EPUB index files
+
+There are various other scripts which were mostly created for one-shot editing tasks.
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────
+XHTML and KeyML
+
+KeyML is a subset of XHTML that can represent any text from the Hooting Yard blog,
+can be used in an EPUB, is acceptable to Kindlegen, and contains sufficient 
+information for translation into LaTeX to create print books.
+
+see https://github.com/HootingYard/archive_management/doc/keyml.txt
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────
+GREASEPENCIL DIRECTORIES.
+
+The directories used by GreasePencil. The books, code and working
+space are kept seperate.
+
+The "books", "code", "bookfiles", and "workspace" directories do not
+need those particular names or locations: they are specified by
+variables in a book's Makefile.
+
+  https://github.com/HootingYard/keyml
+  │
+  ├── ...
+  │
+  └── books
+      │
+      ├── bigbook         All the prose posts from Hooting Yard.
+      │   └── Makefile    "make update" here to download latest prose
+      │
+      ├── books-in-keyml      Book master-copies
+      │   │                   See "BOOK DATA DIRECTORIES" below.
+      │   ├── funny-mountain
+      │   │   │ 
+      │   │   ├── Makefile    "make" here to generate the book
+      │   │   └── ...
+      │   └── ...
+      │
+      └── books-in-latex      Books not defined using the GreasePencil system.
+          │
+          ├── impugned-by-a-peasant
+          │
+          └── ...
+
+  https://github.com/HootingYard/archive_management
+  │
+  ├── ...
+  │
+  └── ... 
+      └── code               GreasePencil's scripts, data and templates.
+          │
+          ├── Makefile.inc   a common Makefile for all books.
+          │
+          ├── *.py scripts
+          │
+          ├── fonts
+          │   └── *.tff
+          │
+          └── templates All sorts of templates.
+              ├── epub
+              │   ├── mimetype
+              │   ├── content.opf
+              │   └── ...
+              ├── latex
+              │   └── *.tex
+              ├── latex-formats
+              │   ├── lulu.tex
+              │   └── ...
+              └── xhtml    For book master copies and the Big Book of Key
+                  ├── bookinfo.json
+                  ├── toc.xhtml
+                  └── ...
+
+
+  ~ Your home directory, or any other convenient spot
+  │
+  ├── bookfiles Finished product ends up here.
+  │   ├── anthology6-lulu.pdf
+  │   ├── anthology6.mobi
+  │   ├── anthology6.epub
+  │   └── ...
+  │
+  └── workspace The Latex and Python scripts' ephemeral files go here.
+      ├── latex
+      │   
+      ├── prose-archive  Raw pages from 'http://hootingyard.org/archives/'
+      │                  "make update" in the bigbook directory refreshs this  
+      └── ebook
+          └── epub
+              └── ...
+
+
+BOOKS-IN-LATEX DIRECTORY
+
+This contains the workspaces were not compiled by Grease Pencil.
+'Impugned By A Peasant Other Stories' was compiled using a TeX-only 
+method that predated Grease Pencil. 'The Immense Duckpond Pamphlet' 
+(an unofficial, undistributed ebook) was prepared using Sigil. 
+  
+
+────────────────────────────────────────────────────────────────────────────────────────────────
+BOOK DATA DIRECTORIES
+
+  books
+  ├── ...
+  └── book 
+      ├── Makefile                           The makefiles are stubs that call 'code/Makefile.inc'
+      ├── info.json                          Book title, author, etc
+      ├── cover.png                          Book cover
+      ├── index.html                         Optional. For convenience when browsing the book data.
+      ├── Text
+      │   ├── toc.xhtml                      Table of contents
+      │   ├── title.xhtml
+      │   ├── copyright.xhtml
+      │   ├── preface.xhtml
+      │   ├── nnnnn_the_chapter_title.xhtml  Files for chapters nnnn = Wordpress blog post number
+      │   └── ...
+      ├── Images
+      │   ├── YYYY-MM-filename.jpg           Images from Hooting Yard. JPEG and PNG only.
+      │   └── ...
+      └── Styles
+          └── style.css
+  
+The "toc.xhtml" file is used as a manifest of the Text files to include
+in the EPUB, and defines the order of those files. Only the image files
+referred to in the Text files will be included in the EPUB.
+
+"title.xhtml" and "copyright.xhtml" pages are optional. If they are
+left out, boilerplate ones will be made from templates.
+
+"preface.xhtml" is mandatory.
+
+GreasePencil currently assumes each XHTML file contains one story or
+chapter with one h1 tag. (This is a bit simple-minded.)
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────
+EPUB CONTENTS
+
+  epub
+  ├── mimetype
+  ├── META-INF
+  │   └── container.xml
+  └── OEBPS
+      ├── content.opf           Created from book/Text/toc.xhtml
+      ├── toc.ncx
+      ├── Text
+      │   ├── copyright.xhtml
+      │   ├── toc.xhtml         Copies of files from the book/Text directory
+      │   ├── preface.xhtml
+      │   ├── nnnnn_the_chapter_title.xhtml
+      │   └── ...
+      ├── Images                Copies of files from the book/Images directory
+      │   ├── 2009-01-filename.jpg
+      │   └── ...
+      ├── Styles
+      │   └── style.css
+      └── Fonts                 (Optional. Doesn't work with Kindle.)
+          ├── opera.tff
+          └── ...
+
+See: http://www.ibm.com/developerworks/xml/tutorials/x-epubtut/
+See: http://www.gbenthien.net/Kindle%20and%20EPUB/epub.html
+
+Epubcheck checks the XHTML and directory structure.
+
+The XHTML files from the book data might need to be slightly pre-processed
+by script for Kindle (see below.)
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────
+A note about Kindlegen and CSS
+
+(This may no longer be relevant, because Kindle now accepts EPUB uploads.)
+
+The current GreasePencil Kindle format uses a CSS stylesheet that
+displays block paragraphs, as on the website. That's kind
+of barbaric, but does make verse and indented text look right.
+
+Kindlegen cannot indent paragraphs within blockquotes. What's need is a
+transformation like this:
+
+  <blockquote>
+    <p class="noindent">AAAAA</p>
+    <p>BBBBBBB</p>
+    <p>CCCCCCC</p>
+  </blockquote>
+
+to
+
+  <blockquote><div>AAAAA</div></blockquote>
+  <blockquote><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BBBBB</div></blockquote>
+  <blockquote><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CCCCC</div></blockquote>
+
+...silly as that looks. Kindlegen incorrectly thinks <blockquote> is a
+kind of paragraph, but Epubcheck correctly complains if it sees PCDATA text
+in a <blockquote> element. The <div> tags take the curse off somehow.
+
+(Actually, despite taking EPUB as an input format Kindlegen can do very
+little XHTML/CSS formatting. The best thing to do would to make up a
+special EPUB just to feed into it.)
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────
+Further notes
+
+LuaTeX might give you a "Invalid ICC profile: Inconsistent checksum."
+warning when compiling the Big Book of Key. It is a JPEG format error
+about one of the image files, I'm not sure which, but it seems to be
+harmless.
+
+────────────────────────────────────────────────────────────────────────────────────────────────
+But how does it all work?
+
+"Go to a field. Attaching clamps to slats with quarter-inch gulliver
+bolts, smear some lattice-work with a decoction of binding-agents and
+thread the netting through tin clips, then dislodge the hasp on the
+paddle in order to provide enough purchase on the metal flanges, which
+should be arranged in rotation beside colour-coded pails, the white
+one being strapped to a clogged bracket, the red one spinning on the
+torque engine, the blue one held in place by rubber frets, and the
+black one chiming against the aluminium knob on the wicket, which is
+fastened to the anchorage unit by a system of winches controlled by a
+clay handle on the bole, against which pellets are fired at
+pre-arranged intervals by the steam gun just below the fourth set of
+nozzles, cleverly positioned at such a distance from the first three
+sets to provide a constant stream of gases to pass over the tarpaulin,
+in which punctures have been made to allow ease of passage for the
+andiron tubes carrying ballbearings to the spandrel and thus on to the
+rotating wooden platform, upon which the greased hinges chafe against
+the pulleys sufficiently for the sparks to ignite sulphur bombs inside
+the bakelite carriage, without endangering the pads, bulbs and chocks
+on the hooter, at the sounding of which the intricately-wired snares
+snap shut and entrap the oiled plasticine clumps, thus momentarily
+halting the recurrent biting movements of the cogs on the discus,
+throwing shards of todge into the motor around which you will have
+placed canvas bags packed with candles in order to steady the
+persistent rattling of the ticker on the back of the iron sledge
+underneath the trolley carrying the double battery-powered hammer
+which serves to agitate the drum containing the four-inch blades
+detached from the rusted bowl of the compass, held in place on the
+rocket by a monstrous titanium screw wedged against the plackets of
+the grit distributor, customised by locking its gut probes into
+position with no less than twenty six separate multiple-gate plugs, on
+each of which a scorched zinc disc swivels in response to the magnetic
+properties of the special basin receiving the droplets of highly
+acidic gum arabic spilling out of the glass globe tethered to the
+scalding hot clasps of the larger plate by chains which run parallel
+to the lengths of string tied at one end to the pirate's aureole and
+at the other to the shank of the casket nailed to the box of flags
+stolen from the same warehouse which provided the hooks for the plank
+balanced uneasily across the gap between the pinboard and the
+hodometer fitted with small beeswax parcels lashed to the crane from
+which dangle several springs and coils loaded with lead weights and
+enamelled cubes the purpose of which becomes apparent when the
+gleaming cork is plunged into the canister of boiling duckpond water
+kept at constant temperature by hastily-repaired piping fed by siphons
+and buttressed by giant prongs from the surfaces of which have been
+expunged precisely engraved instructions for the use of the
+inspirational choir funnels hidden inside the derrick next to the
+pumps on the tray of bauxite pebbles wrapped in hideous orange taffeta
+swaddling material as a sop to the git who provided the jars, flakes
+and asbestos-free wing cranks you will require for timing the
+bleaching operation on the plastic squirting mechanism moulded out of
+discarded beetle caps salvaged from a manufacturer of resins whose
+grotesque sponge hood has been incorporated into the workings of the
+shiny magnesium tripod atop which lurks a uranium pill squashed
+underneath a varnished Icelandic pan containing phosphorus hoops and a
+glamorous leather trumpet pitched towards a cobalt beaker lit up by
+the Mackenzie Beam angled obliquely next to a yellow fustian canopy
+covering a massive trellis to which are glued an up-ended cone of
+polythene veiled by cotton-wool wrapped around a toy horse with a
+propeller caked in mercury powering the fulcrum and bails on the
+fractured tub countersunk behind the crust of a feather on a stool
+with pins affixed to the leaching grille placed askew atop the big
+cracked bucket of winnowed sand. Now stand back and count to a
+hundred..." Voilà! You have the Big Book of Key compiled.
+
