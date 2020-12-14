@@ -8,7 +8,7 @@ from hootingyard.utils.generators import get_show_archives, extract_date, WEEKDA
 
 
 def main(warn_wednesday=False):
-    archive_root:str = get_archive_root()
+    archive_root: str = get_archive_root()
 
     filenames = set()
 
@@ -20,21 +20,21 @@ def main(warn_wednesday=False):
         if warn_wednesday:
             if year > 2004:
                 if tx_date.weekday() != 2:
-                    print(f"{filename} is a {WEEKDAYS[tx_date.weekday()]} not a Wednesday!")
+                    print(
+                        f"{filename} is a {WEEKDAYS[tx_date.weekday()]} not a Wednesday!"
+                    )
 
         corrected_filename = f"hooting_yard_{tx_date.isoformat()}.mp3"
 
         if filename != corrected_filename:
             log.info(f"Would rename {path} to {corrected_path}")
 
-        assert corrected_filename not in filenames, f"{corrected_filename} already exists, was originally {filename}"
+        assert (
+            corrected_filename not in filenames
+        ), f"{corrected_filename} already exists, was originally {filename}"
         filenames.add(corrected_filename)
 
         corrected_path = os.path.join(dirname, corrected_filename)
-
-
-
-
 
 
 if __name__ == "__main__":

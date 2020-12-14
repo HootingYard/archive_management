@@ -10,6 +10,5 @@ def test_extract_speaker_and_timecode0():
 
     speaker, timecode = extract_speaker_and_timecode(input_string)
 
-
     assert speaker == expected_speaker
     assert timecode == expected_timecode
