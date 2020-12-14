@@ -7,11 +7,12 @@ from os.path import join, splitext
 from os import listdir
 from shutil import copy
 
-BOOK  = argv[1]  # The book's GreasePencil data directory
-CODE  = argv[2]  # The GreasePencil code and template directory
+BOOK = argv[1]  # The book's GreasePencil data directory
+CODE = argv[2]  # The GreasePencil code and template directory
 LATEX = argv[3]  # Directory to write Latex files to
 
 IMAGES = join(BOOK, 'Images')
+
 
 def latex_image_path(path):  # type: (str) -> str
     """GIF are rewritten as PNGs for LaTeX, so this
@@ -21,6 +22,7 @@ def latex_image_path(path):  # type: (str) -> str
         return namepart + '.png'
     else:
         return path
+
 
 def main():
     broken = False
@@ -44,6 +46,7 @@ def main():
                     copy(path, dst_path)
     if broken:
         exit(1)
+
 
 if __name__ == '__main__':
     main()

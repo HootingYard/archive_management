@@ -3,11 +3,16 @@
 
 # XXX NOT UP-TO-DATE
 
-import codecs, os, shutil
+import codecs
+import os
+import shutil
 from os.path import join
-from lxml import etree
-from grease import identifierize
+
 from jinja2 import Environment, FileSystemLoader
+from lxml import etree
+
+from grease import identifierize
+import grease
 
 Bigbook = 'bigbook'
 Anthology = 'brute2'
@@ -126,76 +131,87 @@ On A Prang
 On Scroonhoonpooge Marshes
 """
 
+
 def copyfile(src, dst):
     if not os.path.exists(dst):
         shutil.copyfile(src, dst)
 
-def text_only (element):
-    "returns just the text in an element, without any tags"
+
+def text_only(element):
+    """returns just the text in an element, without any tags"""
     s = element.text or u''
     for e in element:
         s += text_only(e) + (e.tail or '')
     return s
 
-def escape (text):
+
+def escape(text):
     return text.replace('&', '&amp;').replace('>', '&gt;').replace('<', '&lt;').replace('"', '&quot;')
 
-def enclosed_xhtml_markup (element):
-    "Returns all the contents of element in the form of a text string containing HTML tags"
+
+def enclosed_xhtml_markup(element):
+    """Returns all the contents of element in the form of a text string containing HTML tags"""
     s = escape(element.text)
-    for e in element: s += etree.tounicode(e)
+    for e in element:
+        s += etree.tounicode(e)
     return s
 
-def lines (text):
+
+def lines(text):
     for line in text.splitlines():
         line = line.strip()
         if line:
             yield line
 
 
-BigbookIndex = {}
-toc = etree.parse(codecs.open(join(Bigbook, 'Text', "toc.xhtml"), "r", "utf-8"), etree.HTMLParser())
-for a in toc.xpath("//*[@class='contents']//a"):
-    BigbookIndex[identifierize(text_only(a))] = a.get('href')
+def main():
+    bigbook_index = {}
+    toc = etree.parse(codecs.open(join(Bigbook, 'Text', "toc.xhtml"), "r", "utf-8"), etree.HTMLParser())
+    for a in toc.xpath("//*[@class='contents']//a"):
+        bigbook_index[identifierize(text_only(a))] = a.get('href')
 
-bookinfo  = grease.get_bookinfo(join(Anthology, 'bookinfo.json'))
+    bookinfo = grease.get_bookinfo(join(Anthology, 'bookinfo.json'))
 
-bookinfo['index'] = []
+    bookinfo['index'] = []
 
-templates = Environment(loader = FileSystemLoader('templates'), autoescape=True)
+    templates = Environment(loader=FileSystemLoader('templates'), autoescape=True)
 
-page    = templates.get_template('chapter.xhtml')
-toc     = templates.get_template('toc.xhtml')
-index   = templates.get_template('index.html')
+    page = templates.get_template('chapter.xhtml')
+    toc = templates.get_template('toc.xhtml')
+    index = templates.get_template('index.html')
 
-for title in lines(Contents):
-    key = identifierize(title)
-    if not BigbookIndex.has_key(key):
-        print '*** Not found: ', title, '***'
-        continue
-   
-    href    = BigbookIndex[key]
-    post    = etree.parse(codecs.open(join(Bigbook, 'Text', href), "r", "utf-8"), etree.HTMLParser())
-    body    = post.xpath('//body[1]')[0]
-    p = body.xpath("//p[@class='postwebpage'][1]")[0]
-    body.remove(p)
+    for title in lines(Contents):
+        key = identifierize(title)
+        if key not in bigbook_index:
+            print '*** Not found: ', title, '***'
+            continue
 
-    title   = text_only(post.xpath('//h1[1]')[0])
-    heading = enclosed_xhtml_markup(post.xpath('//h1[1]')[0])
-   
-    chapter = dict(heading=heading, title=title, href=href)
-   
-    bookinfo['index'].append(chapter)
-   
-    with codecs.open(join(Anthology, 'Text', href), 'w', 'utf-8') as f:
-        f.write(page.render(dict(chapter=chapter, book=bookinfo, body=enclosed_xhtml_markup(body))))
-       
-    for img in post.xpath('//img'):
-        src = os.path.basename(img.get('src'))
-        copyfile(join(Bigbook, 'Images', src), join(Anthology, 'Images', src))
+        href = bigbook_index[key]
+        post = etree.parse(codecs.open(join(Bigbook, 'Text', href), "r", "utf-8"), etree.HTMLParser())
+        body = post.xpath('//body[1]')[0]
+        p = body.xpath("//p[@class='postwebpage'][1]")[0]
+        body.remove(p)
 
-with codecs.open(join(Anthology, 'Text', 'toc.xhtml'), "w", "utf-8") as f:
-    f.write(toc.render(dict(book = bookinfo)))
+        title = text_only(post.xpath('//h1[1]')[0])
+        heading = enclosed_xhtml_markup(post.xpath('//h1[1]')[0])
 
-with codecs.open(join(Anthology, 'index.xhtml'), "w", "utf-8") as f:
-    f.write(index.render(dict(book = bookinfo)))
+        chapter = dict(heading=heading, title=title, href=href)
+
+        bookinfo['index'].append(chapter)
+
+        with codecs.open(join(Anthology, 'Text', href), 'w', 'utf-8') as f:
+            f.write(page.render(dict(chapter=chapter, book=bookinfo, body=enclosed_xhtml_markup(body))))
+
+        for img in post.xpath('//img'):
+            src = os.path.basename(img.get('src'))
+            copyfile(join(Bigbook, 'Images', src), join(Anthology, 'Images', src))
+
+    with codecs.open(join(Anthology, 'Text', 'toc.xhtml'), "w", "utf-8") as f:
+        f.write(toc.render(dict(book=bookinfo)))
+
+    with codecs.open(join(Anthology, 'index.xhtml'), "w", "utf-8") as f:
+        f.write(index.render(dict(book=bookinfo)))
+
+
+if __name__ == '__main__':
+    main()

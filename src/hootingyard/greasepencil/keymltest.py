@@ -1,4 +1,5 @@
-''' validate-keyml.py -- ''' 
+""" validate-keyml.py -- test that bigbook XHTML files match keyml.dtd
+    (Use the newer  utils/text_xhtml.py instead.)"""
 
 from lxml import etree
 import sys, os
