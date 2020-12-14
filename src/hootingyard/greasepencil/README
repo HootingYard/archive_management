@@ -104,7 +104,7 @@ variables in a book's Makefile.
   ├── ...
   │
   └── ... 
-      └── code               GreasePencil's scripts, data and templates.
+      └── greasepencil       GreasePencil's scripts, data and templates.
           │
           ├── Makefile.inc   a common Makefile for all books.
           │
@@ -149,11 +149,11 @@ variables in a book's Makefile.
 
 BOOKS-IN-LATEX DIRECTORY
 
-This contains the workspaces were not compiled by Grease Pencil.
+This contains the book sources that are not compiled by Grease Pencil.
 'Impugned By A Peasant Other Stories' was compiled using a TeX-only 
 method that predated Grease Pencil. 'The Immense Duckpond Pamphlet' 
 (an unofficial, undistributed ebook) was prepared using Sigil. 
-  
+
 
 ────────────────────────────────────────────────────────────────────────────────────────────────
 BOOK DATA DIRECTORIES
@@ -170,26 +170,39 @@ BOOK DATA DIRECTORIES
       │   ├── title.xhtml
       │   ├── copyright.xhtml
       │   ├── preface.xhtml
-      │   ├── nnnnn_the_chapter_title.xhtml  Files for chapters nnnn = Wordpress blog post number
+      │   ├── YYYY-MM-DD-the-chapter-title.xhtml  Files for chapters, in the "KeyML" XHTML subset
+      │   │
+      │   ├── NNNNN_the_chapter_title.xhtml       (The old naming convention, NNNNN = Wordpress ID)
       │   └── ...
       ├── Images
       │   ├── YYYY-MM-filename.jpg           Images from Hooting Yard. JPEG and PNG only.
       │   └── ...
-      └── Styles
-          └── style.css
-  
+      ├── Styles
+      │    └── style.css                     An adapted version of the ebook stylesheet
+      └── Fonts
+           ├── LinLibertine_*.ttf            Linux Libertine, the text font for the ebooks 
+           ├── opera-lyrics-s mooth.ttf      Font for headings (not available online anymore)
+           └── UnderwoodChampion2.sfd        Used for the typewriter font on the ebooks 
+
 The "toc.xhtml" file is used as a manifest of the Text files to include
-in the EPUB, and defines the order of those files. Only the image files
-referred to in the Text files will be included in the EPUB.
+in the EPUB, and defines the order of those files in the Epub index. 
+Only the image files referred to in the Text files will be included in the EPUB.
 
 "title.xhtml" and "copyright.xhtml" pages are optional. If they are
 left out, boilerplate ones will be made from templates.
 
 "preface.xhtml" is mandatory.
 
-GreasePencil currently assumes each XHTML file contains one story or
-chapter with one h1 tag. (This is a bit simple-minded.)
+GreasePencil currently assumes each XHTML file contains one story or book 
+chapter with a single h1 tag at the top. (This is a bit simple-minded.)
 
+The "Styles" and "Fonts" directories don't strictly need to be be there, but they
+allow the book contents to be previewed in a web browser. "style.css" is bascially
+the ebook CSS with wider margins.
+
+(Opera Lyrics Smooth is based on a 19th Century Italian font which was hand-struck 
+onto zinc plates for obscure opera-related reasons. That just screamed "Hooting Yard". 
+I'm not sure where the "Smooth" comes into it.)
 
 ────────────────────────────────────────────────────────────────────────────────────────────────
 EPUB CONTENTS
@@ -212,14 +225,14 @@ EPUB CONTENTS
       │   └── ...
       ├── Styles
       │   └── style.css
-      └── Fonts                 (Optional. Doesn't work with Kindle.)
+      └── Fonts
           ├── opera.tff
           └── ...
 
 See: http://www.ibm.com/developerworks/xml/tutorials/x-epubtut/
 See: http://www.gbenthien.net/Kindle%20and%20EPUB/epub.html
 
-Epubcheck checks the XHTML and directory structure.
+Epubcheck checks the XHTML files and directory structure for adherance to XHTML5 and ePub 3.0. 
 
 The XHTML files from the book data might need to be slightly pre-processed
 by script for Kindle (see below.)
