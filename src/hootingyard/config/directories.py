@@ -25,3 +25,6 @@ def get_big_book_scripts_dirctory():
 
 def get_stories_dirctory():
     return os.path.join(get_analysis_directory(), "stories")
+
+def get_statistics_directory():
+    return os.path.join(get_analysis_directory(), "statistics")

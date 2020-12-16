@@ -55,7 +55,7 @@ def get_stories() -> Iterator[Story]:
 
 def load_story_from_path(file_path:str)->Story:
     with open(file_path) as story_file:
-        return Story(**yaml.load(story_file))
+        return Story(**yaml.load(story_file, Loader=yaml.SafeLoader))
 
 
 if __name__ == "__main__":
