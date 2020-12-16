@@ -1,6 +1,7 @@
 import dataclasses
 import heapq
 import logging
+import math
 import os
 
 import yaml
@@ -25,7 +26,11 @@ def main(max_ngrams_per_story=15, ngram_length=3):
         story_filename = f"{story.id}.yaml"
         story_path = os.path.join(stories_dirctory, story_filename)
 
-        ngrams = story.get_ngrams(ngram_length=3, max_ngrams=max_ngrams_per_story, wf_scoring_function=wf_scoring_function)
+
+        word_count:int = story.get_word_count()
+        ngram_count = min(max(3,math.floor(word_count/12)),max_ngrams_per_story)
+
+        ngrams = story.get_ngrams(ngram_length=3, max_ngrams=ngram_count, wf_scoring_function=wf_scoring_function)
 
         story_info = StoryInfo(
             story=story,
