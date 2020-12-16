@@ -1,4 +1,5 @@
 import datetime
+import itertools
 import os
 import re
 from dataclasses import dataclass
@@ -35,11 +36,16 @@ class Transcript:
     file_path: str
 
     def paragraphs(self) -> Iterator[TranscriptParagraph]:
+
+        def take3(iter):
+          return [next(iter), next(iter), next(iter)]
+
         with open(file=self.file_path) as transcript_file:
-            line_iterator = transcript_file.__iter__()
-            while line_iterator:
-                speaker, time_code = extract_speaker_and_timecode(next(line_iterator))
-                text = next(line_iterator)
+
+            while True:
+
+                first_line, text, _ = take3(transcript_file)
+                speaker, time_code = extract_speaker_and_timecode(first_line)
                 yield TranscriptParagraph(
                     speaker=speaker, time_code=time_code, text=text
                 )
@@ -53,3 +59,13 @@ def get_transcript_path_by_date(transcript_date: datetime.date) -> str:
 
 def get_transcript_by_date(transcript_date: datetime.date) -> Transcript:
     return Transcript(get_transcript_path_by_date(transcript_date))
+
+def get_transcript_by_filename(filename:str) -> Transcript:
+    transcript_dir: str = get_transcript_directory()
+    return Transcript(os.path.join(transcript_dir, filename))
+
+def get_transcripts()->Iterator[Transcript]:
+    transcripts_dir:str = get_transcript_directory()
+    for file_name in os.listdir(transcripts_dir):
+        file_path = os.path.join(transcripts_dir, file_name)
+        yield Transcript(file_path)

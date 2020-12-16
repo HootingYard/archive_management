@@ -28,3 +28,9 @@ def get_stories_dirctory():
 
 def get_statistics_directory():
     return os.path.join(get_analysis_directory(), "statistics")
+
+def get_index_directory():
+    return os.path.join(get_analysis_directory(), "index")
+
+def get_external_data_directory():
+    return os.path.join(get_analysis_directory(), "external_data")
