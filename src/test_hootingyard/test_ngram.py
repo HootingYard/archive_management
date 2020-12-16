@@ -1,4 +1,4 @@
-from hootingyard.analysis.ngram import ngrams
+from hootingyard.analysis.ngram import ngrams, score_ngrams, NgramWithScore
 
 
 def test_ngram1():
@@ -16,3 +16,20 @@ def test_ngram3():
 def test_ngram_alpha():
     result = list(ngrams(n=3,inp="abc"))
     assert result == [["a","b","c"],]
+
+def test_score_ngrams():
+    ngrams = [["a", "b"], ["a","c"]]
+    scoring_function = {
+        "a":1,
+        "b":2,
+        "c":5
+    }.get
+
+    result = list(score_ngrams(ngrams_iterator=ngrams, scoring_function=scoring_function))
+
+    assert result==[
+        NgramWithScore(ngram=["a", "b"], score=3),
+        NgramWithScore(ngram=["a", "c"], score=6),
+
+    ]
+

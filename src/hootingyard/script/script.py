@@ -7,7 +7,7 @@ from typing import Mapping, Union
 
 from bs4 import BeautifulSoup
 
-from hootingyard.config.index.story import Story, InvalidStory
+from hootingyard.index.story import Story, InvalidStory
 
 log = logging.getLogger(__name__)
 

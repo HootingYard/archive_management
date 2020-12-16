@@ -2,7 +2,8 @@ import csv
 import logging
 import os
 from collections import Counter
-from typing import Iterator
+from typing import Callable
+from typing import Iterator, Mapping
 
 import yaml
 
@@ -31,7 +32,13 @@ def main():
         yaml.dump({w:c for (w,c) in word_counter.most_common()}, yaml_file)
 
 
+def word_frequency()->Callable[[str],int]:
+    with open(get_word_frequency_yaml_path()) as yaml_file:
+        wf:Mapping[str,int] = yaml.load(yaml_file, Loader=yaml.SafeLoader)
+    def get_word_frequency(word:str)->int:
+        return int(wf[word])
 
+    return get_word_frequency
 
 
 if __name__ == "__main__":

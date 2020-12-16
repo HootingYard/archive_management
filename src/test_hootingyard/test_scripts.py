@@ -2,7 +2,7 @@ import datetime
 import os
 
 from hootingyard.config.directories import get_big_book_scripts_dirctory
-from hootingyard.config.index.story import Story
+from hootingyard.index.story import Story
 from hootingyard.script.generators import get_scripts
 from hootingyard.script.script import (
     get_id_from_filename,
