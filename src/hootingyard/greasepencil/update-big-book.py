@@ -6,34 +6,36 @@
 
 # This script downloads the images used in blog posts when necessary.
 import codecs
+import glob
 import json
 import os
-import urllib, urlparse, glob, sys, re
-from os.path import join
+import re
+import sys
+import urllib
+import urlparse
 from cStringIO import StringIO
-
 from copy import deepcopy
+from os.path import join
 from typing import Dict, Text
+
+import jinja2
+from PIL import Image
+from lxml.etree import strip_tags, strip_elements
+from lxml.html import clean, fromstring, HtmlElement
 
 from grease import remove_elements_attributes, iscentred, isempty, insert_all, keep_only_these_attributes, \
     enclosed_xhtml_markup, text_only, identifierize, fix_unicode, PostInfo, BookInfo, remove_elements, get_bookinfo
 
-import jinja2
-from lxml.html import clean, fromstring, HtmlElement
-from lxml.etree import strip_tags, strip_elements
-from PIL import Image
-
 ARCHIVE = sys.argv[1]  # Directory of Wordpress blog archive pages
-DATA    = sys.argv[2]  # The Big Book's GreasePencil data directory
-CODE    = sys.argv[3]  # The GreasePencil code and template directory
+DATA = sys.argv[2]  # The Big Book's GreasePencil data directory
+CODE = sys.argv[3]  # The GreasePencil code and template directory
 
 WordpressFiles = sorted(glob.glob(join(ARCHIVE, 'prose-*.html')))
 
 loader = jinja2.FileSystemLoader(join(CODE, 'templates', 'xhtml'))
 templates = jinja2.Environment(loader=loader, autoescape=True)
 
-
-Asterisks = re.compile(r'^\s*(\*\s*)+$', re.DOTALL)  #Text that is nothing but asterisks.
+Asterisks = re.compile(r'^\s*(\*\s*)+$', re.DOTALL)  # Text that is nothing but asterisks.
 
 
 def addclass(element, value):  # type: (HtmlElement, str) -> None
@@ -45,17 +47,17 @@ def addclass(element, value):  # type: (HtmlElement, str) -> None
     element.set('class', cls)
 
 
-   
 def text_surgery(s):  # type: (Text) -> Text
-    ''' Replace punctuation that looks bad in print form. '''
-    s = s.replace(u' - ', u'—')       # Replace dashes that look horrible in print
+    """ Replace punctuation that looks bad in print form. """
+    s = s.replace(u' - ', u'—')  # Replace dashes that look horrible in print
     s = s.replace(u' – ', u'—')
     s = s.replace(u' :', FrankColon)  # If it's worth doing, it's worth doing right :-|
-    s = NonApostrophe.sub(ur"'\1", s) # Replace single-quotes inside words with true apostrophes
-    s = DateDash.sub(ur"\1–\2", s)   # en dashes inside date ranges
+    s = NonApostrophe.sub(ur"'\1", s)  # Replace single-quotes inside words with true apostrophes
+    s = DateDash.sub(ur"\1–\2", s)  # en dashes inside date ranges
     return s
 
-FrankColon = unichr(0xA0) + u':' # non-breaking space, colon
+
+FrankColon = unichr(0xA0) + u':'  # non-breaking space, colon
 NonApostrophe = re.compile(ur'’([A-Za-z])')
 DateDash = re.compile(ur'([0-9])-([0-9])')
 
@@ -70,7 +72,7 @@ def enclose_illustrations(post):  # type: (HtmlElement) -> None
 
     # A paragraph containing at least one image is a row of images for an illustration:
     for p in post.xpath(".//p[.//img[1]]"):
-        images = fromstring('<p class="imagerow"></p>\n') # type: HtmlElement
+        images = fromstring('<p class="imagerow"></p>\n')  # type: HtmlElement
         for img in p.xpath(".//img"):
             img = deepcopy(img)
             img.tail = None
@@ -92,7 +94,7 @@ def enclose_illustrations(post):  # type: (HtmlElement) -> None
                 nextp.getparent().remove(nextp)
 
         # Replace the image paragraph with a division enclosing the above:
-        div = fromstring('<div class="illustration"></div>\n') # type: HtmlElement
+        div = fromstring('<div class="illustration"></div>\n')  # type: HtmlElement
         div.insert(0, images)
         if not isempty(caption): div.insert(1, caption)
         div.text = '\n'
@@ -100,7 +102,7 @@ def enclose_illustrations(post):  # type: (HtmlElement) -> None
         p.getparent().replace(p, div)
 
 
-def clean_text (element):  # type: (HtmlElement) -> None
+def clean_text(element):  # type: (HtmlElement) -> None
 
     for e in element.iterdescendants():
         if e.text: e.text = text_surgery(e.text)
@@ -118,11 +120,11 @@ def clean_text (element):  # type: (HtmlElement) -> None
     # Replace tags with their bare, abstract versions:
     for i in element.xpath(".//i"): i.tag = 'em'
     for i in element.xpath(".//b"): i.tag = 'strong'
-    for a in element.xpath(".//a"): keep_only_these_attributes (a, {'href'})
+    for a in element.xpath(".//a"): keep_only_these_attributes(a, {'href'})
     for x in element.xpath(".//li|.//ul|.//del"): remove_elements_attributes(x)
 
 
-def adjust_styles (post):  # type: (HtmlElement) -> None
+def adjust_styles(post):  # type: (HtmlElement) -> None
     # XXX I'm removing ALL style tags here. The ones used up to Aug 2012
     # have been cruft added by word processors, but that might change.
 
@@ -135,15 +137,15 @@ def adjust_styles (post):  # type: (HtmlElement) -> None
     for span in post.xpath(".//span[@style='text-decoration: line-through;']"):
         remove_elements_attributes(span)
         span.tag = 'del'
-       
+
     for span in post.xpath(".//span[@style='font-size: small;']"):
         remove_elements_attributes(span)
         span.tag = 'small'
-       
-    strip_tags(post, 'span')   # XXX totally ignore remaining spans
+
+    strip_tags(post, 'span')  # XXX totally ignore remaining spans
 
 
-def adjust_text_break_asterisks (post):  # type: (HtmlElement) -> None
+def adjust_text_break_asterisks(post):  # type: (HtmlElement) -> None
     for p in post.xpath(".//p"):
         if len(p) == 0 and Asterisks.match(p.text or ''):
             p.text = ''
@@ -151,9 +153,9 @@ def adjust_text_break_asterisks (post):  # type: (HtmlElement) -> None
             n = p.getnext()
             if n is not None and n.tag == 'p':
                 addclass(n, 'noindent')
-   
 
-def adjust_indents (post):  # type: (HtmlElement) -> None
+
+def adjust_indents(post):  # type: (HtmlElement) -> None
     # Text with whitespace above it should not not be given paragraph indents.
 
     # Paragraphs containing breaks are /usually/ verse, and have whitespace about and below:
@@ -165,17 +167,17 @@ def adjust_indents (post):  # type: (HtmlElement) -> None
         n = element.getnext()
         if n is not None and n.tag == 'p':
             addclass(n, 'noindent')
-       
+
     # The first paragraph of a blockquote has whitespace above it
     for p in post.xpath(".//blockquote/p[1]"):
         addclass(p, 'noindent')
 
 
-def clean_image_attributes (img):  # type: (HtmlElement) -> None
+def clean_image_attributes(img):  # type: (HtmlElement) -> None
     keep_only_these_attributes(img, {'src', 'alt', 'class'})
     # Wordpress images have extra attributes and classes we don't want.
     # See keyml.dtd for the accepted img classes.
-    if img.attrib.has_key('class'):
+    if 'class' in img.attrib:
         classes = set(img.attrib.get('class', '').split())
         classes &= {'size-full', 'size-medium', 'size-large', 'small', 'fullwidth'}
         if classes != set():
@@ -186,19 +188,19 @@ def clean_image_attributes (img):  # type: (HtmlElement) -> None
     if img.attrib.get('alt', '') == '':
         img.attrib['alt'] = '(Illustration.)'
 
-        
-def collect_images (post_url, post):  # type: (str, HtmlElement) -> None
+
+def collect_images(post_url, post):  # type: (str, HtmlElement) -> None
 
     for img in post.xpath(".//img"):
 
-        url = urlparse.urljoin(post_url, urllib.quote(img.get("src").encode('utf-8'))) #XXX
+        url = urlparse.urljoin(post_url, urllib.quote(img.get("src").encode('utf-8')))  # XXX
         print 'Image:', url
 
         # Wordpress stores images in year/month subdirectories, but EPUB does not,
         # so we make the year and date part of the image's filename instead:
         match = re.search(r'wp-content/uploads/(\d\d\d\d)/(\d\d)/(.*)$', url)
         if match:
-            filename = '-'.join(match.groups())  #i.e. yyyy-mm-filename.jpg
+            filename = '-'.join(match.groups())  # i.e. yyyy-mm-filename.jpg
         else:
             filename = os.path.basename(urlparse.urlsplit(url).path)
 
@@ -236,51 +238,52 @@ def save_as_png(filename_png, url):  # type: (str, str) -> None
 BlogURL = re.compile(r'http://.*hootingyard\.org/archives/([0-9]+)')
 
 
-def classify_and_redirect_links (post, postindex):  # type: (HtmlElement, Dict[str, PostInfo]) -> None
-    ''' Makes links to other prose posts local '''
+def classify_and_redirect_links(post, postindex):  # type: (HtmlElement, Dict[str, PostInfo]) -> None
+    """ Makes links to other prose posts local """
     # XXX This may result in broken links when extracting an anthology,
     # so the links will need to be re-checked by the script that does that.
-    for a in post.xpath(".//a"): # type: HtmlElement
+    for a in post.xpath(".//a"):  # type: HtmlElement
         href = a.get('href') or ''
         m = BlogURL.match(href)
         if m:
             postid = 'post-' + m.group(1)  # type: str
-            if postindex.has_key(postid):
+            if postid in postindex:
                 a.set('class', 'internal')
                 a.set('title', postindex[postid]['title'])
         elif 'hootingyard.org' in href:
             a.set('class', 'hootingyard')
         else:
             a.set('class', 'external')
-                   
-           
-def xhtml_formatting (post):  # type: (HtmlElement) -> None
+
+
+def xhtml_formatting(post):  # type: (HtmlElement) -> None
     # some spacing make it readable
     for p in post.xpath('//div|//p|//h1|//blockquote'): p.tail = '\n\n'
 
 
-def get_post_info (entry):  # type: (HtmlElement) -> PostInfo
-    link    = entry.xpath(".//*[@class='entry-title']/a")[0]
-    postid  = entry.get('id')  # "post-nnnnn"
-    postnum = int(postid[postid.index('-')+1:])
-    date    = entry.xpath(".//div[@class='entry-meta']//time/@datetime")[0][:10]  # "yyyy-mm-dd"
+def get_post_info(entry):  # type: (HtmlElement) -> PostInfo
+    link = entry.xpath(".//*[@class='entry-title']/a")[0]
+    postid = entry.get('id')  # "post-nnnnn"
+    postnum = int(postid[postid.index('-') + 1:])
+    date = entry.xpath(".//div[@class='entry-meta']//time/@datetime")[0][:10]  # "yyyy-mm-dd"
     clean_text(link)
-    heading = enclosed_xhtml_markup(link)   #with HTML mark up
-    title   = text_surgery(text_only(link)) #without mark up
-    info = { 'id'       : str(postid),
-             'postnum'  : postnum,
-             'filename' : '%05i_%s.xhtml' % (postnum, identifierize(text_only(link))),
-             'href'     : link.get('href'),
-             'date'     : date,
-             'heading'  : heading,
-             'title'    : title }
-    #print postnum, title
+    heading = enclosed_xhtml_markup(link)  # with HTML mark up
+    title = text_surgery(text_only(link))  # without mark up
+    info = {'id': str(postid),
+            'postnum': postnum,
+            'filename': '%05i_%s.xhtml' % (postnum, identifierize(text_only(link))),
+            'href': link.get('href'),
+            'date': date,
+            'heading': heading,
+            'title': title}
+    # print postnum, title
     return info
 
-def process_post (entry, postinfo, postindex):
+
+def process_post(entry, postinfo, postindex):
     # type: (HtmlElement, PostInfo, Dict[str, PostInfo]) -> HtmlElement
     post = entry.xpath(".//div[@class='entry-content'][1]")[0]
-    h1 = fromstring(u'<h1 id="%s">%s</h1>\n\n' % (postinfo['id'], postinfo['heading'])) # type: HtmlElement
+    h1 = fromstring(u'<h1 id="%s">%s</h1>\n\n' % (postinfo['id'], postinfo['heading']))  # type: HtmlElement
     post.insert(0, h1)
     remove_elements(post, '//form')
     remove_elements_attributes(post)
@@ -296,20 +299,21 @@ def process_post (entry, postinfo, postindex):
     return post
 
 
-cleaner = clean.Cleaner( scripts = True,
-                         javascript = True,
-                         comments = True,
-                         processing_instructions = True,
-                         embedded = True,
-                         frames = True,
-                         forms = True,
-                         remove_unknown_tags = True )
+cleaner = clean.Cleaner(scripts=True,
+                        javascript=True,
+                        comments=True,
+                        processing_instructions=True,
+                        embedded=True,
+                        frames=True,
+                        forms=True,
+                        remove_unknown_tags=True)
 
-def parse_dubious_html (path):  # type: (str) -> HtmlElement
+
+def parse_dubious_html(path):  # type: (str) -> HtmlElement
     with codecs.open(path, "r", "utf-8") as f: text = f.read()
     text = re.sub(r'(?is)<o.*?>.*?</o>|<object.*?>.*?</object>|<iframe.*?>.*?</iframe>', u'', text)
     cleaner.clean_html(text)
-    html = fromstring(text) # type: HtmlElement
+    html = fromstring(text)  # type: HtmlElement
     fix_unicode(html)
     return html
 
@@ -317,22 +321,24 @@ def parse_dubious_html (path):  # type: (str) -> HtmlElement
 post_template = templates.get_template('post.xhtml')
 
 
-def write_post (path, post, postinfo, bookinfo): # type: (str, HtmlElement, PostInfo, BookInfo) -> None
+def write_post(path, post, postinfo, bookinfo):  # type: (str, HtmlElement, PostInfo, BookInfo) -> None
     postinfo['body'] = enclosed_xhtml_markup(post)
     with codecs.open(path, "w", "utf-8") as f:
-        data = dict(post = postinfo, book = bookinfo)
+        data = dict(post=postinfo, book=bookinfo)
         f.write(post_template.render(data))
 
 
-def write_toc_page (bookinfo):  # type: (BookInfo) -> None
+def write_toc_page(bookinfo):  # type: (BookInfo) -> None
     path = join(DATA, 'Text', 'toc.xhtml')
     with codecs.open(path, "w", "utf-8") as f:
-        data = dict(book = bookinfo)
+        data = dict(book=bookinfo)
         f.write(templates.get_template('toc.xhtml').render(data))
+
 
 def replace_internal_links(post, postinfo):  # type: (HtmlElement, PostInfo) -> None
     for a in post.xpath(".//a[@class='internal']"):
         a.attrib['href'] = postinfo['filename']
+
 
 def main():
     bookinfo = get_bookinfo(join(CODE, 'templates', 'xhtml', 'bigbookinfo.json'))
@@ -373,5 +379,5 @@ def main():
             else:
                 print ' ', path
 
-main()
 
+main()
