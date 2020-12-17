@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-""" This does its best to provide XHTML files with “smart quotes” and other tyographical finaries."""
+""" This does its best to provide XHTML files with “smart quotes” and other typographical finaries."""
 
 from typing import List
 from pathlib import Path
@@ -7,9 +7,6 @@ from argparse import ArgumentParser
 import re
 
 from smartypants import smartypants, convert_entities
-
-
-__all__ = []
 
 
 class Settings:
@@ -37,9 +34,10 @@ def main():
 
 def run(files: List[Path], dump: bool, update: bool) -> None:
     for file in files:
-        if settings.verbose: print(file)
+        if settings.verbose:
+            print(file)
         text = file.read_text()
-        if re.search(r'[“–”‘—’]', text) and not settings.force:
+        if re.search(r'[“”‘’]', text) and not settings.force:
             print(f"There are already smart quotes in {file}")
         else:
             text = process(text)
@@ -49,24 +47,8 @@ def run(files: List[Path], dump: bool, update: bool) -> None:
                 file.write_text(text)
 
 
-
 def process(text: str) -> str:
-    return text_surgery(convert_entities(smartypants(text), 0))
-
-
-def text_surgery(s: str) -> str:
-    """ Replace punctuation that looks bad in print form. """
-    s = s.replace(' - ', '—')       # Replace dashes that look horrible in print
-    s = s.replace(' – ', '—')
-    s = s.replace(' :', FrankColon)  # If it's worth doing, it's worth doing right :-|
-    s = NonApostrophe.sub(r"'\1", s) # Replace single-quotes inside words with true apostrophes
-    s = DateDash.sub(r"\1–\2", s)   # en dashes inside date ranges
-    return s
-
-
-FrankColon = chr(0xA0) + ':' # non-breaking space, colon
-NonApostrophe = re.compile(r'’([A-Za-z])')
-DateDash = re.compile(r'([0-9])-([0-9])')
+    return convert_entities(smartypants(text), 0)
 
 
 if __name__ == '__main__':

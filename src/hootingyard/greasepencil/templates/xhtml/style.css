@@ -25,7 +25,7 @@
     font-style: italic;
 }
 
-@font-face { font-family: 'Opera' ;
+@font-face { font-family: 'Opera' ; 
              src: url('../Fonts/opera-lyrics-smooth.ttf') format('truetype');
 }
 
@@ -35,6 +35,9 @@ a             { text-decoration:none; }
 a.internal    { text-decoration:none; }
 a.hootingyard { text-decoration:underline; }
 a.external    { text-decoration:underline; }
+a.internal-image:after  { content:" [Image]" }
+a.internal-audio:after  { content:" [Audio]" }
+a.internal-pdf:after    { content:" [PDF]" }
 
 h1 { font-weight: normal; font-family: 'Opera'; text-transform: uppercase; text-align: left; }
 h1.plain { text-transform: uppercase; font-family: 'Libertine'; text-align: left; }
@@ -52,10 +55,23 @@ p.center      { text-indent:0;  text-align:center; }
 p.noindent    { text-indent:0;  }
 p.linebreaks  { text-indent:0; margin-top: 0.5em; margin-bottom: 0.5em; }
 p.breakabove  { text-indent:0; margin-top: 0.5em;  }
+p.footnote    { text-indent:0; margin-top: 0.5em;  }
+p.postwebpage { text-indent:0; margin-top:4mm; font-size: 50%; }
+p.source      { text-indent: 0; margin-top: 1em; font-style: italics; }
+p.editor      { text-indent: 0; margin-top: 1em; font-style: italics; }
 p.postwebpage { text-indent:0; margin-top:4mm; font-size: 60%; }
 p.textbreak   { text-indent: 0; text-align: center; margin-top: 1em; font-family: 'Opera'; }
 p.byline   { font-family: 'Opera'; text-indent: 0; margin-bottom: 2em; text-align: left; }
 
+p.textbreak   { text-indent: 0; text-align: center; margin-top: 1em; }
+strong.footnote { color:red; }
+
+span.asterisk { color:red; font-style: bold; }
+span.mark { color:red; font-style: bold; }
+
+div.illustration { margin:2em; }
+p.images         { text-align:center; }
+p.caption        { margin-top:1mm; font-size:90%; text-align:center; font-weight:bold; text-indent:0; }
 img {
     display: block;
     margin-left: auto;
@@ -63,11 +79,14 @@ img {
 
 img.aligncenter  {  }
 img.alignleft    {  }
-img.size-full    { width:80mm; }
-img.size-medium  { width:60mm; }
+img.size-full    { width:80%; }
+img.size-medium  { width:60%; }
 img.small        { width:15%; }
 img.fullwidth    { width:100%; }
 
+div.illustration { margin:2em;  }
+div.illustrationfullwidth { width: 100%;  }
+p.imagerow { text-align:center; }
 p.caption { margin-top:1mm; font-size:90%; text-align:center; font-weight:bold; text-indent:0; }
 
 div.blockparagraphs p { text-indent:0;  margin-top: 1em; }
@@ -75,9 +94,9 @@ div.blockparagraphs p { text-indent:0;  margin-top: 1em; }
 div.verse     { margin-left: 5%; margin-right: 5%; margin-bottom: 1em; }
 div.verse p   { text-indent: 0; margin-top: 1em; text-align:left; font-style:italic; }
 
-div.illustration { margin:2em;  }
-div.illustrationfullwidth { width: 100%;  }
 
 strong.footnote { color:red; }
+p.footnote span.mark { font-weight: bold; color: red; }
+span.asterisk        { font-weight: bold; color: red; }
    
 /* end */
