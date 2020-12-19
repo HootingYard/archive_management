@@ -18,6 +18,5 @@ class AudioFile:
         return mutagen.File(self.path)
 
 
-def get_audio_file_by_id(id:str)->AudioFile:
+def get_audio_file_by_id(id: str) -> AudioFile:
     return AudioFile(path=get_audio_file_path_by_id(id))
-
