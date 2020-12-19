@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-""" This does its best to provide XHTML files with “smart quotes” and other typographical finaries."""
+""" This does its best to provide XHTML files with “smart quotes” and other typographical finaries.
+    It does this by running 'smartypants' on it, and correcting the apostrophes it stuffs up."""
 
 from typing import List
 from pathlib import Path
@@ -48,7 +49,10 @@ def run(files: List[Path], dump: bool, update: bool) -> None:
 
 
 def process(text: str) -> str:
-    return convert_entities(smartypants(text), 0)
+    s = convert_entities(smartypants(text), 0)
+    # Smartypants replaces proper mid-word apostrophes with single quotes:
+    s = re.sub(r"\b[‘’]\b", "'", s)  # put them back
+    return s
 
 
 if __name__ == '__main__':
