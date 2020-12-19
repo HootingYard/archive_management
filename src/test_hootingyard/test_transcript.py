@@ -37,4 +37,9 @@ def test_second_paragraph():
 def test_get_last_paragraph_for_transcript():
     t: Transcript = get_transcript_by_filename(filename="hooting_yard_2016-06-16.txt")
     last_paragraph = list(t.paragraphs())[-1]
+    assert last_paragraph.text.startswith("Finally this week"), f"Wrong text: {last_paragraph.text}"
     assert last_paragraph.time_code == datetime.timedelta(seconds=27*60 + 9)
+
+def test_get_id_for_transcript():
+    t: Transcript = get_transcript_by_filename(filename="hooting_yard_2016-06-16.txt")
+    assert t.get_id() == "hooting_yard_2016-06-16"

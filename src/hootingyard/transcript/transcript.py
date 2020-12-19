@@ -1,5 +1,4 @@
 import datetime
-import itertools
 import os
 import re
 from dataclasses import dataclass
@@ -30,25 +29,39 @@ class TranscriptParagraph:
     time_code: datetime.timedelta
     text: str
 
+    def word_iterator(self)->Iterator[str]:
+        for island in re.split("[\s]+", self.text):
+            yield from (w.lower() for w in re.findall("([a-zA-Z\-\']+)", island))
+
 
 @dataclass
 class Transcript:
     file_path: str
 
     def paragraphs(self) -> Iterator[TranscriptParagraph]:
-
         def take3(iter):
-          return [next(iter), next(iter), next(iter)]
+            l = [next(iter), next(iter)]
+            try:
+                l.append(next(iter))
+            except StopIteration:
+                l.append("")
+            return l
 
         with open(file=self.file_path) as transcript_file:
 
             while True:
-
-                first_line, text, _ = take3(transcript_file)
+                try:
+                    first_line, text, _ = take3(transcript_file)
+                except StopIteration:
+                    break
                 speaker, time_code = extract_speaker_and_timecode(first_line)
                 yield TranscriptParagraph(
                     speaker=speaker, time_code=time_code, text=text
                 )
+
+    def get_id(self)->str:
+        the_id, ext = os.path.basename(self.file_path).rsplit(".", maxsplit=2)
+        return the_id
 
 
 def get_transcript_path_by_date(transcript_date: datetime.date) -> str:
