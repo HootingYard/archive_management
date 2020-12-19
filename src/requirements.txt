@@ -6,3 +6,5 @@ pillow
 beautifulsoup4
 black
 Unidecode
+mutagen
+internetarchive
