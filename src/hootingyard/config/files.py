@@ -1,6 +1,8 @@
 import os
+from typing import Iterator
 
-from hootingyard.config.directories import get_external_data_directory, get_statistics_directory, get_index_directory
+from hootingyard.config.directories import get_external_data_directory, get_statistics_directory, get_index_directory, \
+    get_show_index_directory, get_refined_show_index_directory, get_matches_directory
 
 
 def get_corncob_lowercase_path()->str:
@@ -22,4 +24,12 @@ def transcript_to_script_matches()->str:
     return os.path.join(get_index_directory(), "transcript_to_script_matches.yaml")
 
 def get_transcript_to_script_match_file(show_id:str)->str:
-    return os.path.join(get_index_directory(), "matches", f"{show_id}.yaml")
+    return os.path.join(get_matches_directory(), f"{show_id}.yaml")
+
+def get_refined_show_contents_file(show_id:str)->str:
+    return os.path.join(get_refined_show_index_directory(), f"{show_id}.yaml")
+
+def get_transcript_to_script_match_files()->Iterator[str]:
+    index_directory = get_matches_directory()
+    for file_name in os.listdir(index_directory):
+        yield os.path.join(index_directory, file_name)

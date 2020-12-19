@@ -29,7 +29,7 @@ def script_word_frequency()->Callable[[str], int]:
     with open(script_word_frequency_yaml_file_path()) as yaml_file:
         wf:Mapping[str,int] = yaml.load(yaml_file, Loader=yaml.SafeLoader)
     def get_word_frequency(word:str)->int:
-        return int(wf[word])
+        return int(wf.get(word,0))
 
     return get_word_frequency
 

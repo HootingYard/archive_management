@@ -18,5 +18,11 @@ def test_refine3():
 def test_refine4():
     do_yaml_test(4)
 
+def test_refine5():
+    do_yaml_test(5)
+
+def test_refine6():
+    do_yaml_test(6)
+
 
 

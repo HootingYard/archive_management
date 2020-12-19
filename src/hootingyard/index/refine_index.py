@@ -1,10 +1,10 @@
 import logging
-from dataclasses import dataclass
 from typing import List, Optional
 
 import yaml
 
-from hootingyard.config.files import transcript_to_script_matches
+from hootingyard.config.files import transcript_to_script_matches, get_transcript_to_script_match_files, \
+    get_refined_show_contents_file
 from hootingyard.utils.date_utils import extract_date_from_string
 
 log = logging.getLogger(__name__)
@@ -26,8 +26,8 @@ def simplify_segment_result(time_code, votes, previous_segment:Optional[str]):
         # Then pick the latest of the two stories
         best_vote = max(sorted_votes[:2], key=lambda v:extract_date_from_string(v[0]))[0]
     else:
-        raise RuntimeError("Not sure what to do")
-        # best_vote = sorted_votes[0][0]
+        # No clear winner
+        return None
 
     return {
         "time_code":time_code,
@@ -50,12 +50,18 @@ def refine_show(id:str, matches):
     }
 
 def main():
-    with open(transcript_to_script_matches()) as matches_file:
-        matches = yaml.safe_load(matches_file)
+    for file_path in get_transcript_to_script_match_files():
+        log.info(f"Loading {file_path}.")
+        with open(file_path) as matches_file:
+            matches = yaml.safe_load(matches_file)
+        refined = refine_show(**matches)
+        id = matches["id"]
+        log.info(f"Refining {id}")
+        output_path = get_refined_show_contents_file(id)
+        with open(output_path, "w") as output_file:
+            yaml.safe_dump(refined, output_file)
 
 
-    for show, show_content in matches.items():
-        print(show, show_content)
 
 if __name__ == "__main__":
     logging.basicConfig()

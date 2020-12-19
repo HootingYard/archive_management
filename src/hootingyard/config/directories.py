@@ -34,3 +34,13 @@ def get_index_directory():
 
 def get_external_data_directory():
     return os.path.join(get_analysis_directory(), "external_data")
+
+def get_show_index_directory():
+    return os.path.join(get_index_directory(), "show_index")
+
+def get_matches_directory():
+    return os.path.join(get_index_directory(), "matches")
+
+
+def get_refined_show_index_directory():
+    return os.path.join(get_index_directory(), "refined_show_index")
