@@ -5,6 +5,7 @@ import logging
 from dataclasses import dataclass
 from typing import Mapping, Union
 
+import unidecode
 from bs4 import BeautifulSoup
 
 from hootingyard.index.story import Story, InvalidStory
@@ -59,7 +60,7 @@ class Script:
     def get_title(self) -> str:
         title = self.get_dom().title.string
         assert isinstance(title, str)
-        return str(title)
+        return str(unidecode.unidecode(title))
 
     def get_paragraphs(self):
         def is_postwebpage(ptag) -> bool:
@@ -70,7 +71,7 @@ class Script:
         return paragraphs
 
     def get_text(self) -> str:
-        return "\n".join(p.get_text() for p in self.get_paragraphs())
+        return "\n".join(unidecode.unidecode(p.get_text()) for p in self.get_paragraphs())
 
     def get_metadata(self) -> Mapping[str, Union[str, str]]:
         m = {}

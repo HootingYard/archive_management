@@ -18,7 +18,7 @@ from hootingyard.script.generators import get_scripts
 log = logging.getLogger(__name__)
 
 
-def main(min_ngrams_per_story=5,max_ngrams_per_story=200, ngram_length=3):
+def main(min_ngrams_per_story=5,max_ngrams_per_story=400, ngram_length=3):
     stories_dirctory: str = get_stories_dirctory()
     story_index:DefaultDict[int,List[str]] = defaultdict(list)
 

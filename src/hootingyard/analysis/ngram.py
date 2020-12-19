@@ -1,6 +1,7 @@
 import heapq
 from collections import deque
 from dataclasses import dataclass
+from functools import reduce
 from typing import TypeVar, Iterator, List, Callable
 
 T = TypeVar("T")
@@ -21,6 +22,8 @@ def trigrams(inp:Iterator[T])->Iterator[List[T]]:
     return ngrams(3, inp)
 
 def score_ngram(ngram:List[str], scoring_function:Callable[[str],int])->NgramWithScore:
+    scored_items = [scoring_function(w) for w in ngram]
+    score = reduce(lambda x,y: x*y, scored_items)
     return NgramWithScore(ngram=ngram, score=sum(scoring_function(w) for w in ngram))
 
 def score_ngrams(ngrams_iterator:Iterator[List[str]], scoring_function:Callable[[str],int])->Iterator[NgramWithScore]:

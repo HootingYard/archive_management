@@ -27,30 +27,37 @@ def main():
     ngram_lookup_function = ngram_to_script_index()
     log.info("Beginning matching process.")
     for t in get_transcripts():
-        result = {
-            "id":t.get_id(),
-            "matches":[]
-        }
-        log.info(f"Matching: {t}")
-        transcript_date = extract_date_from_string(t.get_id())
-        for p in t.paragraphs():
-            found_matches = []
-            for ngram in trigrams(p.word_iterator()):
-                hashable_ngram = tuple(ngram)
-                matches = ngram_lookup_function(hashable_ngram)
-                for found_script_id in matches:
-                    script_date = extract_date_from_string(found_script_id)
-                    if script_date < transcript_date:
-                        found_matches.append(found_script_id)
-
-            if found_matches:
-                result["matches"].append({"time_code":p.time_code.seconds, "votes":count_and_dictify(found_matches)})
-
+        match_result = match_single_transcript(ngram_lookup_function, t)
         output_file_path = get_transcript_to_script_match_file(t.get_id())
         log.warning("Opening output file.")
         with open(output_file_path, "w") as transcript_to_script_matches_file:
-            yaml.dump(dict(result), transcript_to_script_matches_file)
-        log.info("Done.")
+            yaml.dump(dict(match_result), transcript_to_script_matches_file)
+        log.info(f"Finished matching for {t.get_id()}")
+
+
+
+def match_single_transcript(ngram_lookup_function, t):
+    result = {
+        "id": t.get_id(),
+        "matches": []
+    }
+    log.info(f"Matching: {t}")
+    transcript_date = extract_date_from_string(t.get_id())
+    for p in t.paragraphs():
+        found_matches = []
+        for ngram in trigrams(p.word_iterator()):
+            hashable_ngram = tuple(ngram)
+            matches = ngram_lookup_function(hashable_ngram)
+            for found_script_id in matches:
+                script_date = extract_date_from_string(found_script_id)
+                if script_date < transcript_date:
+                    found_matches.append(found_script_id)
+
+        if found_matches:
+            result["matches"].append({"time_code": p.time_code.seconds, "votes": count_and_dictify(found_matches)})
+    return result
+
+
 
 
 if __name__ == "__main__":
