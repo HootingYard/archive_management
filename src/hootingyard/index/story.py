@@ -46,9 +46,3 @@ class Story:
 
 
 
-
-
-
-if __name__ == "__main__":
-    for s in get_stories():
-        print(s)

@@ -42,16 +42,13 @@ def match_single_transcript(ngram_lookup_function, t):
         "matches": []
     }
     log.info(f"Matching: {t}")
-    transcript_date = extract_date_from_string(t.get_id())
     for p in t.paragraphs():
         found_matches = []
         for ngram in trigrams(p.word_iterator()):
             hashable_ngram = tuple(ngram)
             matches = ngram_lookup_function(hashable_ngram)
             for found_script_id in matches:
-                script_date = extract_date_from_string(found_script_id)
-                if script_date < transcript_date:
-                    found_matches.append(found_script_id)
+                found_matches.append(found_script_id)
 
         if found_matches:
             result["matches"].append({"time_code": p.time_code.seconds, "votes": count_and_dictify(found_matches)})
