@@ -1,10 +1,15 @@
 import logging
 
-from hootingyard.index import script_word_frequency, transcript_word_frequency, match_transcripts_to_scripts, \
-    refine_index
+from hootingyard.index import (
+    script_word_frequency,
+    transcript_word_frequency,
+    match_transcripts_to_scripts,
+    refine_index,
+)
 from hootingyard.utils import generate_script_index
 
 log = logging.getLogger(__name__)
+
 
 def main():
     log.info("Calculating script word frquency.")
@@ -17,6 +22,7 @@ def main():
     match_transcripts_to_scripts.main()
     log.info("Refining the index.")
     refine_index.main()
+
 
 if __name__ == "__main__":
     logging.basicConfig()

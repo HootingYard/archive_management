@@ -3,15 +3,19 @@ from typing import List, Optional
 
 import yaml
 
-from hootingyard.config.files import transcript_to_script_matches, get_transcript_to_script_match_files, \
-    get_refined_show_contents_file
+from hootingyard.config.files import (
+    transcript_to_script_matches,
+    get_transcript_to_script_match_files,
+    get_refined_show_contents_file,
+)
 from hootingyard.utils.date_utils import extract_date_from_string
 
 log = logging.getLogger(__name__)
 
-def simplify_segment_result(time_code, votes, previous_segment:Optional[str]):
+
+def simplify_segment_result(time_code, votes, previous_segment: Optional[str]):
     total_votes = sum(votes.values())
-    sorted_votes = sorted(votes.items(), key=lambda x:x[1], reverse=True)
+    sorted_votes = sorted(votes.items(), key=lambda x: x[1], reverse=True)
     all_choices = set(votes.keys())
 
     if previous_segment and previous_segment in all_choices:
@@ -24,30 +28,30 @@ def simplify_segment_result(time_code, votes, previous_segment:Optional[str]):
     elif sum(v[1] for v in sorted_votes[:2]) > (total_votes * 0.6):
         # If the top 2 votes are more than 60% then take the latest
         # Then pick the latest of the two stories
-        best_vote = max(sorted_votes[:2], key=lambda v:extract_date_from_string(v[0]))[0]
+        best_vote = max(sorted_votes[:2], key=lambda v: extract_date_from_string(v[0]))[
+            0
+        ]
     else:
         # No clear winner
         return None
 
-    return {
-        "time_code":time_code,
-        "story": best_vote
-    }
+    return {"time_code": time_code, "story": best_vote}
 
 
 def pick_matches(matches):
-    previous_segment_result:Optional[str] = None
+    previous_segment_result: Optional[str] = None
     for segment in matches:
-        segment_result = simplify_segment_result(**segment, previous_segment=previous_segment_result)
+        segment_result = simplify_segment_result(
+            **segment, previous_segment=previous_segment_result
+        )
         if segment_result:
             yield segment_result
             previous_segment_result = segment_result["story"]
 
-def refine_show(id:str, matches):
-    return {
-        "id": id,
-        "stories": list(pick_matches(matches))
-    }
+
+def refine_show(id: str, matches):
+    return {"id": id, "stories": list(pick_matches(matches))}
+
 
 def main():
     for file_path in get_transcript_to_script_match_files():
@@ -60,7 +64,6 @@ def main():
         output_path = get_refined_show_contents_file(id)
         with open(output_path, "w") as output_file:
             yaml.safe_dump(refined, output_file)
-
 
 
 if __name__ == "__main__":

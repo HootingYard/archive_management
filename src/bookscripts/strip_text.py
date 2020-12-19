@@ -26,12 +26,26 @@ __all__ = []
 
 def main():
     # noinspection PyTypeChecker
-    parser = ArgumentParser(description=__doc__, formatter_class=RawDescriptionHelpFormatter)
-    parser.add_argument('source', type=Path, help='a directory containing XHTML files')
-    parser.add_argument('-o', '--output', type=Path, help='output directory for JSON files', required=True)
-    parser.add_argument('-d', '--overwrite', action='store_true', help='overwrite old output files')
-    parser.add_argument('-x', '--nopunctuation', action='store_true', help='remove punctuation')
-    parser.add_argument('-v', '--verbose', action='store_true', help='print processed path names')
+    parser = ArgumentParser(
+        description=__doc__, formatter_class=RawDescriptionHelpFormatter
+    )
+    parser.add_argument("source", type=Path, help="a directory containing XHTML files")
+    parser.add_argument(
+        "-o",
+        "--output",
+        type=Path,
+        help="output directory for JSON files",
+        required=True,
+    )
+    parser.add_argument(
+        "-d", "--overwrite", action="store_true", help="overwrite old output files"
+    )
+    parser.add_argument(
+        "-x", "--nopunctuation", action="store_true", help="remove punctuation"
+    )
+    parser.add_argument(
+        "-v", "--verbose", action="store_true", help="print processed path names"
+    )
     args = parser.parse_args()
     if args.source.exists():
         run(args.source, args.output, args.overwrite, args.nopunctuation, args.verbose)
@@ -40,14 +54,16 @@ def main():
         sys.exit(1)
 
 
-def run(xhtml_dir: Path,
-        json_dir: Path,
-        overwrite_json_files: bool,
-        no_punctuation: bool,
-        verbose: bool) -> None:
+def run(
+    xhtml_dir: Path,
+    json_dir: Path,
+    overwrite_json_files: bool,
+    no_punctuation: bool,
+    verbose: bool,
+) -> None:
     for xhtml_path in xhtml_dir.glob(POST_GLOB):
 
-        json_path = json_dir / (xhtml_path.stem + '.json')
+        json_path = json_dir / (xhtml_path.stem + ".json")
         if not overwrite_json_files and json_path.exists():
             continue
 
@@ -61,34 +77,34 @@ def run(xhtml_dir: Path,
         if not date:
             continue  # probably not a post
 
-        data['date'] = date[1:-1]
-        data['title'] = element_text(html, '//h1').strip()
-        data['url'] = html.xpath('//p[@class="postwebpage"]/a')[0].attrib['href']
-        data['file'] = xhtml_path.name
-        data['text'] = process_text(html, no_punctuation)
+        data["date"] = date[1:-1]
+        data["title"] = element_text(html, "//h1").strip()
+        data["url"] = html.xpath('//p[@class="postwebpage"]/a')[0].attrib["href"]
+        data["file"] = xhtml_path.name
+        data["text"] = process_text(html, no_punctuation)
 
-        with open(json_path, mode='w') as file:
+        with open(json_path, mode="w") as file:
             json.dump(data, file)
 
 
-POST_GLOB = '[0-9][0-9][0-9][0-9][0-9]_*.xhtml'
+POST_GLOB = "[0-9][0-9][0-9][0-9][0-9]_*.xhtml"
 
 
 def element_text(element: HtmlElement, xpath: str) -> str:
     elements = element.xpath(xpath)
     if not elements:
-        return ''
+        return ""
     else:
         return elements[0].text_content()
 
 
 def process_text(html: HtmlElement, no_punctuation: bool) -> str:
-    text = element_text(html, '//body').strip()
-    text = re.sub(r'\s+', ' ', text)
+    text = element_text(html, "//body").strip()
+    text = re.sub(r"\s+", " ", text)
     if no_punctuation:
-        text = re.sub(r"[^ \w']", '', text)
+        text = re.sub(r"[^ \w']", "", text)
     return text
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -29,9 +29,9 @@ class TranscriptParagraph:
     time_code: datetime.timedelta
     text: str
 
-    def word_iterator(self)->Iterator[str]:
+    def word_iterator(self) -> Iterator[str]:
         for island in re.split("[\s]+", self.text):
-            yield from (w.lower() for w in re.findall("([a-zA-Z\-\']+)", island))
+            yield from (w.lower() for w in re.findall("([a-zA-Z\-']+)", island))
 
 
 @dataclass
@@ -59,7 +59,7 @@ class Transcript:
                     speaker=speaker, time_code=time_code, text=text
                 )
 
-    def get_id(self)->str:
+    def get_id(self) -> str:
         the_id, ext = os.path.basename(self.file_path).rsplit(".", maxsplit=2)
         return the_id
 
@@ -73,12 +73,14 @@ def get_transcript_path_by_date(transcript_date: datetime.date) -> str:
 def get_transcript_by_date(transcript_date: datetime.date) -> Transcript:
     return Transcript(get_transcript_path_by_date(transcript_date))
 
-def get_transcript_by_filename(filename:str) -> Transcript:
+
+def get_transcript_by_filename(filename: str) -> Transcript:
     transcript_dir: str = get_transcript_directory()
     return Transcript(os.path.join(transcript_dir, filename))
 
-def get_transcripts()->Iterator[Transcript]:
-    transcripts_dir:str = get_transcript_directory()
+
+def get_transcripts() -> Iterator[Transcript]:
+    transcripts_dir: str = get_transcript_directory()
     for file_name in os.listdir(transcripts_dir):
         file_path = os.path.join(transcripts_dir, file_name)
         yield Transcript(file_path)

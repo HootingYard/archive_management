@@ -11,7 +11,7 @@ def get_keyml_root():
     return get_config().keyml_directory
 
 
-def get_analysis_directory()->str:
+def get_analysis_directory() -> str:
     return get_config().analysis_directory
 
 
@@ -26,17 +26,22 @@ def get_big_book_scripts_dirctory():
 def get_stories_dirctory():
     return os.path.join(get_analysis_directory(), "stories")
 
+
 def get_statistics_directory():
     return os.path.join(get_analysis_directory(), "statistics")
+
 
 def get_index_directory():
     return os.path.join(get_analysis_directory(), "index")
 
+
 def get_external_data_directory():
     return os.path.join(get_analysis_directory(), "external_data")
 
+
 def get_show_index_directory():
     return os.path.join(get_index_directory(), "show_index")
+
 
 def get_matches_directory():
     return os.path.join(get_index_directory(), "matches")

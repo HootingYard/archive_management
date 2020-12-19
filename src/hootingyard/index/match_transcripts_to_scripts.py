@@ -8,7 +8,10 @@ from typing import DefaultDict, List, TypeVar, Iterator, Mapping
 import yaml
 
 from hootingyard.analysis.ngram import ngrams, trigrams
-from hootingyard.config.files import transcript_to_script_matches, get_transcript_to_script_match_file
+from hootingyard.config.files import (
+    transcript_to_script_matches,
+    get_transcript_to_script_match_file,
+)
 from hootingyard.index.ngram_to_script_index import ngram_to_script_index
 from hootingyard.transcript.transcript import get_transcripts
 from hootingyard.utils.date_utils import extract_date_from_string
@@ -18,7 +21,8 @@ log = logging.getLogger(__name__)
 
 T = TypeVar("T")
 
-def count_and_dictify(found_matches:Iterator[T])->Mapping[T,int]:
+
+def count_and_dictify(found_matches: Iterator[T]) -> Mapping[T, int]:
     return dict(collections.Counter(found_matches).most_common(5))
 
 
@@ -35,12 +39,8 @@ def main():
         log.info(f"Finished matching for {t.get_id()}")
 
 
-
 def match_single_transcript(ngram_lookup_function, t):
-    result = {
-        "id": t.get_id(),
-        "matches": []
-    }
+    result = {"id": t.get_id(), "matches": []}
     log.info(f"Matching: {t}")
     for p in t.paragraphs():
         found_matches = []
@@ -51,10 +51,13 @@ def match_single_transcript(ngram_lookup_function, t):
                 found_matches.append(found_script_id)
 
         if found_matches:
-            result["matches"].append({"time_code": p.time_code.seconds, "votes": count_and_dictify(found_matches)})
+            result["matches"].append(
+                {
+                    "time_code": p.time_code.seconds,
+                    "votes": count_and_dictify(found_matches),
+                }
+            )
     return result
-
-
 
 
 if __name__ == "__main__":

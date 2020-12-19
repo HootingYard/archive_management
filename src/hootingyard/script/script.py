@@ -71,7 +71,9 @@ class Script:
         return paragraphs
 
     def get_text(self) -> str:
-        return "\n".join(unidecode.unidecode(p.get_text()) for p in self.get_paragraphs())
+        return "\n".join(
+            unidecode.unidecode(p.get_text()) for p in self.get_paragraphs()
+        )
 
     def get_metadata(self) -> Mapping[str, Union[str, str]]:
         m = {}

@@ -13,7 +13,7 @@ log = logging.getLogger(__name__)
 class Config:
     project_directory: str  # This should be the path to hooting_yard_projects dropbox
     keyml_directory: str  # This should be where the keyml GitHub project is checked out
-    analysis_directory: str # This should be were the analysis project files are checked out.
+    analysis_directory: str  # This should be were the analysis project files are checked out.
 
 
 @functools.lru_cache()

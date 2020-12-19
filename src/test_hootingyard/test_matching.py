@@ -9,12 +9,12 @@ def test_matching():
     ngram_lookup_function = ngram_to_script_index()
     match_result = match_single_transcript(ngram_lookup_function, t)
 
+
 def test_that_l_trigrams_from_the_script_are_in_the_index():
-    story_info = get_story_info_by_id("2008-04-24-disquieting-ploppy-noises-from-behind-the-panel")
+    story_info = get_story_info_by_id(
+        "2008-04-24-disquieting-ploppy-noises-from-behind-the-panel"
+    )
     ngram_lookup_function = ngram_to_script_index()
     for ngram in story_info.ngrams:
         result = ngram_lookup_function(tuple(ngram))
         assert story_info.story.id in result
-
-
-

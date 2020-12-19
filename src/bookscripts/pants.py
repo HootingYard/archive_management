@@ -23,11 +23,30 @@ settings = Settings()
 
 def main():
     parser = ArgumentParser(description=__doc__)
-    parser.add_argument('-d', '--dump', action='store_true', help='write the output to stdout')
-    parser.add_argument('-u', '--update', action='store_true', help='overwrite the files with their processed versions')
-    parser.add_argument('-f', '--force', action='store_true', help='overwrite the files without question!')
-    parser.add_argument('-v', '--verbose', action='store_true', help='print file names as they are processed')
-    parser.add_argument('files', type=Path, metavar='XHTML', nargs='+', help='XHTML files to process')
+    parser.add_argument(
+        "-d", "--dump", action="store_true", help="write the output to stdout"
+    )
+    parser.add_argument(
+        "-u",
+        "--update",
+        action="store_true",
+        help="overwrite the files with their processed versions",
+    )
+    parser.add_argument(
+        "-f",
+        "--force",
+        action="store_true",
+        help="overwrite the files without question!",
+    )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="print file names as they are processed",
+    )
+    parser.add_argument(
+        "files", type=Path, metavar="XHTML", nargs="+", help="XHTML files to process"
+    )
     args = parser.parse_args(namespace=settings)
 
     run(args.files, args.dump, args.update)
@@ -38,7 +57,7 @@ def run(files: List[Path], dump: bool, update: bool) -> None:
         if settings.verbose:
             print(file)
         text = file.read_text()
-        if re.search(r'[“”‘’]', text) and not settings.force:
+        if re.search(r"[“”‘’]", text) and not settings.force:
             print(f"There are already smart quotes in {file}")
         else:
             text = process(text)
@@ -55,5 +74,5 @@ def process(text: str) -> str:
     return s
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

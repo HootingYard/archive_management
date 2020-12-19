@@ -18,17 +18,15 @@ from hootingyard.script.generators import get_scripts
 log = logging.getLogger(__name__)
 
 
-def main(min_ngrams_per_story=5,max_ngrams_per_story=400, ngram_length=3):
+def main(min_ngrams_per_story=5, max_ngrams_per_story=400, ngram_length=3):
     stories_dirctory: str = get_stories_dirctory()
-    story_index:DefaultDict[int,List[str]] = defaultdict(list)
+    story_index: DefaultDict[int, List[str]] = defaultdict(list)
 
     script_word_frequency_function = script_word_frequency()
     transcript_word_frequency_function = transcript_word_frequency()
 
-
-    def ngram_filter_function(ngram:List[str])->bool:
+    def ngram_filter_function(ngram: List[str]) -> bool:
         return all(transcript_word_frequency_function(w) for w in ngram)
-
 
     for script in get_scripts():
         story = script.get_story()
@@ -37,16 +35,21 @@ def main(min_ngrams_per_story=5,max_ngrams_per_story=400, ngram_length=3):
         story_filename = f"{story.id}.yaml"
         story_path = os.path.join(stories_dirctory, story_filename)
 
+        word_count: int = story.get_word_count()
+        ngram_count = min(
+            max(min_ngrams_per_story, math.floor(word_count / 8)), max_ngrams_per_story
+        )
 
-        word_count:int = story.get_word_count()
-        ngram_count = min(max(min_ngrams_per_story,math.floor(word_count/8)),max_ngrams_per_story)
-
-        ngrams = get_ngrams(ngram_length=ngram_length, max_ngrams=ngram_count, wf_scoring_function=script_word_frequency_function, filter_function=ngram_filter_function, word_iterator=story.lowercase_word_iterator())
+        ngrams = get_ngrams(
+            ngram_length=ngram_length,
+            max_ngrams=ngram_count,
+            wf_scoring_function=script_word_frequency_function,
+            filter_function=ngram_filter_function,
+            word_iterator=story.lowercase_word_iterator(),
+        )
 
         story_info = StoryInfo(
-            story=story,
-            ngrams=ngrams,
-            word_count=story.get_word_count()
+            story=story, ngrams=ngrams, word_count=story.get_word_count()
         )
 
         with open(story_path, "w") as story_file:
