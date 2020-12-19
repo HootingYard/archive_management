@@ -6,22 +6,22 @@ and relatively linked images can be checked for validity.
 
 Example: python3 test_xhtml.py -i -d keyml.dtd bigbook/Text/[0-9]*.xhtml
 """
-
 from sys import stderr, exit
-from typing import List, Any
 from pathlib import Path
-from argparse import ArgumentParser, RawTextHelpFormatter
+from argparse import ArgumentParser
 from urllib.request import url2pathname
+from typing import List
 
 from PIL import Image
 from lxml.etree import XMLParser, DTD, DocumentInvalid, DTDParseError, XMLSyntaxError, parse
 from lxml.etree import _Element  # this is okay to do, it is just used for the type interface
 
 
-__all__ = []
+__all__ = []  # not a module
 
 
 XMLNS = {'xhtml': 'http://www.w3.org/1999/xhtml'}  # XML namespace table
+
 
 class Settings:
     dtd: Path
@@ -30,12 +30,13 @@ class Settings:
     links: bool
     files: List[Path]
 
+
 settings = Settings()
 
 
 def main():
     # note: it's okay to use Path as an argument type
-    parser = ArgumentParser(description=__doc__, formatter_class=RawTextHelpFormatter)
+    parser = ArgumentParser(description=__doc__)
     # noinspection PyTypeChecker
     parser.add_argument('-d', '--dtd', metavar='DTD', type=Path, help='the DTD file to test against', required=True)
     parser.add_argument('-i', '--images', action='store_true', help='also test image links')
@@ -92,7 +93,7 @@ def test(xhtml_file: Path, dtd: DTD, images: bool, links: bool) -> bool:
 
 def test_images(xhtml_file: Path, xhtml: _Element) -> bool:
     success = True
-    imgs: Any = xhtml.xpath('//xhtml:img', namespaces=XMLNS)
+    imgs: _Element = xhtml.xpath('//xhtml:img', namespaces=XMLNS)
     for img in imgs:
         img: _Element
         src = str(img.attrib['src'])
@@ -111,7 +112,7 @@ def test_images(xhtml_file: Path, xhtml: _Element) -> bool:
 
 def test_links(xhtml_file: Path, xhtml: _Element) -> bool:
     success = True
-    imgs: Any = xhtml.xpath('//xhtml:a', namespaces=XMLNS)
+    imgs: _Element = xhtml.xpath('//xhtml:a', namespaces=XMLNS)
     for img in imgs:
         img: _Element
         href = str(img.attrib['href'])

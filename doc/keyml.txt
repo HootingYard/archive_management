@@ -17,6 +17,8 @@ See:
    https://github.com/HootingYard/archive_management/blob/main/src/hootingyard/utils/keyml.dtd
    https://github.com/HootingYard/archive_management/blob/main/src/hootingyard/utils/test_xhtml.py
 
+KeyML does not distinguish between short stories, blog post and book chapters.
+But neither did Frank Key, really.
 
 Below is the KeyML subset. The indentation indicates nesting, dots indicates class. 
 Note that KeyML does not allow multiple classes in a single class attribute, 
@@ -41,6 +43,8 @@ Block level tags:
     
     h1.squeeze#       (where # is 1, 2 or 3) This classes tweak the lines of
     h1.pad#           vertical space above LaTeX headings to remove widows and orphans.
+    
+    h2                Heading within the chapter (i.e. not the chapters's title)
 
     ol
     ul
@@ -55,6 +59,8 @@ Block level tags:
     p
     p.noindent        Unidented paragraph. Occurs after headings, illustations and block quotes.
     p.center          Centered text
+    
+    p.byline          Author attribution or introduction directly under the heading
     
     p.verse           A single stanza of verse (div.verse is an alternative)
         br            Used to break verses into lines
@@ -77,7 +83,6 @@ Block level tags:
             img.small        
             img.size-medium
             img.size-large
-            img.size-full    unscaled image
             img.fullwidth    image that is the full width of the type block
             
         p.caption            The caption under the illustration
@@ -86,7 +91,7 @@ Block level tags:
 
     div.verse                In here paragraphs represent stanzas of verse.
         p
-           br                divides lines
+           br                divides lines of verse
 
     div.newpage              An empty division suggesting where LaTeX should start a new page.
 

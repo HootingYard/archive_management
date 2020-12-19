@@ -2,7 +2,7 @@ pyyaml
 dateparser
 pytest
 lxml
-PIL
+pillow
 beautifulsoup4
 black
 Unidecode

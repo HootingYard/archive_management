@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 """ Create a new Table of Contents file (toc.xhtml) for The Big Book of Key. """
-
+import re
 from argparse import ArgumentParser
 from datetime import datetime
 from pathlib import Path
-from lxml.html import parse, fromstring, tostring
+from typing import Dict, List
+
+from lxml.html import parse, fromstring, tostring, HtmlElement
 from copy import deepcopy
+
+from lxml.html.builder import DIV, CLASS
 
 
 class Settings:
@@ -32,24 +36,70 @@ def main():
         run(text_dir, settings.dummy_run, settings.verbose)
 
 
+def extract_iso_date(text: str) -> datetime.date:
+    match = re.search(r'\d\d\d\d-\d\d-\d\d', text)
+    if match:
+        return datetime.strptime(match.group(), '%Y-%m-%d')
+    else:
+        raise ValueError(f'No YYYY-MM-DD date found: {text}')
+
+
+def get_contents(toc: Path) -> List[HtmlElement]:
+        date = extract_iso_date(p.text_content)
+
+
+def get_title_link(page: Path) -> HtmlElement:
+    html = parse(str(page)).getroot()
+    elements = html.xpath('.//h1')
+    if len(elements) == 0 or elements[0].text_content().strip() == 'Quote of the Day':
+        elements = html.xpath('.//title')
+    link = deepcopy(elements[0])
+    link.tag = 'a'
+    link.attrib.clear()
+    link.attrib['href'] = page.name
+    return link
+
+
+def merge_in_sorted(item_list: List[HtmlElement], sorted_list: List[HtmlElement]) -> List[HtmlElement]:
+    if not item_list:
+        return sorted_list
+    elif not sorted_list:
+        return item_list
+    else:
+        new_list = []
+        if item_list[0].text < sorted_list[0]:
+            new_list = [sorted_list[0], item_list[0]]
+            del sorted_list[0]
+            del item_list[0]
+        for item in item_list:
+            while sorted_list and sorted_list[0] > :
+                new_list.append(sorted_list[0])
+                del sorted_list[0]
+            new_list.append(item)
+        return new_list
+
 def run(text_dir: Path, dummy_run: bool = False, verbose: bool = False) -> None:
     toc = text_dir / 'toc.xhtml'
-    files = sorted(text_dir.glob('[12]*.xhtml'))
-    ordered_list = fromstring('<ol class="contents">\n</ol>\n')
-    for file in files:
+    if toc.exists():
+        html = parse(str(toc)).getroot()
+        contents_div = html.xpath('.//div[@contents]')[0]
+        old_contents = list(html.xpath('.//div[@contents]/p'))
+    else:
+        old_contents = []
+    new_contents = []
+    for file in text_dir.glob('[12][90][0-9][0-9]*.xhtml'):  # files stating with dates
+        link = get_title_link(file)
+        date = extract_iso_date(file.name)
+        item = P(f"{date} — ", link)
+        item.tail = '\n'
+        new_contents.append(item)
         if verbose:
-            print(file.name)
-        html = parse(str(file))
-        elements = html.xpath('.//h1')
-        if len(elements) == 0:
-            elements = html.xpath('.//title')
-        link = deepcopy(elements[0])
-        link.tag = 'a'
-        link.attrib.clear()
-        link.attrib['href'] = file.name
-        list_element = fromstring('<li></li>\n')
-        list_element.insert(0, link)
-        ordered_list.append(list_element)
+            print(file.name, "'" + link.text_content() + "'")
+    new_contents.sort()
+    contents = []
+
+    for item in old_contents:
+
     list_xhtml = tostring(ordered_list, pretty_print=True, method='xml', encoding='unicode')
     xhtml = Template.format(LIST=list_xhtml, DATE=datetime.now().isoformat())
     if not dummy_run:
