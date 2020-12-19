@@ -1,19 +1,22 @@
 import yaml
 
+from hootingyard.index.refine_index import refine_show
+from test_hootingyard.refinement_test_data import get_refinement_test_data
 
-def test_refine0():
-    show_id = 'hooting_yard_2007-02-07'
-    matches =  = {'hooting_yard_2007-02-07': {260: {'2007-02-06-good-king-wenceslas-impersonation-incident': 28,
-                                              '2007-02-06-pick-some-words-n-save-resonance': 3},
-                                        936: {'2007-02-05-the-socks-of-pepintude': 30}}}
+def do_yaml_test(test_number:int):
+    assert refine_show(**get_refinement_test_data(test_number,"input")) == get_refinement_test_data(test_number,"expected")
 
-    expected = [
-            {"time_code": 260,
-             "story_id": "2007-02-06-good-king-wenceslas-impersonation-incident"
-             },
-            {"time_code": 936,
-             "story_id": "2007-02-05-the-socks-of-pepintude"
-             },
-        ]
+def test_refine1():
+    do_yaml_test(1)
 
-    assert expected == extract_show_details_from_matches(show_id=hooting_yard_2007-02-07, matches=)
+def test_refine2():
+    do_yaml_test(2)
+
+def test_refine3():
+    do_yaml_test(3)
+
+def test_refine4():
+    do_yaml_test(4)
+
+
+

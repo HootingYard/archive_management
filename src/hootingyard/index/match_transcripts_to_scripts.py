@@ -11,12 +11,10 @@ from hootingyard.analysis.ngram import ngrams, trigrams
 from hootingyard.config.files import transcript_to_script_matches, get_transcript_to_script_match_file
 from hootingyard.index.ngram_to_script_index import ngram_to_script_index
 from hootingyard.transcript.transcript import get_transcripts
+from hootingyard.utils.date_utils import extract_date_from_string
 
 log = logging.getLogger(__name__)
 
-def extract_date_from_string(s:str)->datetime.date:
-    for m in re.findall("([0-9]{4})-([0-9]{2})-([0-9]{2})", s):
-        return datetime.date(*[int(x) for x in m])
 
 T = TypeVar("T")
 
