@@ -1,13 +1,17 @@
 import logging
-from typing import List, Optional
+from dataclasses import dataclass
+from typing import List, Optional, Mapping, Any
 
 import yaml
 
+from hootingyard.audio.audio_file import AudioFile, get_audio_file_by_id
 from hootingyard.config.files import (
     transcript_to_script_matches,
     get_transcript_to_script_match_files,
-    get_refined_show_contents_file,
+    get_refined_show_contents_file, get_audio_file_path_by_id,
 )
+from hootingyard.index.story import Story
+from hootingyard.index.story_info import StoryInfo, get_story_info_by_id
 from hootingyard.utils.date_utils import extract_date_from_string
 
 log = logging.getLogger(__name__)
@@ -64,6 +68,47 @@ def main():
         output_path = get_refined_show_contents_file(id)
         with open(output_path, "w") as output_file:
             yaml.safe_dump(refined, output_file)
+
+
+@dataclass
+class StoryInShow:
+    time_code: int
+    story: str
+
+    def get_story_info(self)->StoryInfo:
+        return get_story_info_by_id(self.story)
+
+
+@dataclass
+class RefinedShow:
+    id: str
+    stories: List[StoryInShow]
+
+    @classmethod
+    def from_dict(cls, id:str, stories:List[Mapping[str,Any]]):
+        return cls(
+            id=id,
+            stories=[StoryInShow(**s) for s in stories]
+        )
+
+    def get_audio_file(self)->AudioFile:
+        return get_audio_file_by_id(self.id)
+
+    def get_stories_in_order_of_length(self)->List[StoryInfo]:
+        return sorted([s.get_story_info() for s in self.stories], key=lambda s:s.word_count, reverse=True)
+
+    def get_most_significant_story(self)->StoryInfo:
+        sorted_stories = self.get_stories_in_order_of_length()
+        total_word_count = sum(s.word_count for s in sorted_stories)
+        if sorted_stories[0].word_count / total_word_count > 0.5:
+            return sorted_stories[0]
+        else:
+            return self.stories[0].get_story_info()
+
+
+def get_refined_index_by_id(index_id:str)->RefinedShow:
+    with open(get_refined_show_contents_file(index_id)) as index_file:
+        return RefinedShow.from_dict(**yaml.safe_load(index_file))
 
 
 if __name__ == "__main__":

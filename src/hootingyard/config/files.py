@@ -7,8 +7,9 @@ from hootingyard.config.directories import (
     get_index_directory,
     get_show_index_directory,
     get_refined_show_index_directory,
-    get_matches_directory,
+    get_matches_directory, get_archive_root,
 )
+from hootingyard.utils.date_utils import extract_date_from_string
 
 
 def get_corncob_lowercase_path() -> str:
@@ -41,6 +42,11 @@ def get_transcript_to_script_match_file(show_id: str) -> str:
 
 def get_refined_show_contents_file(show_id: str) -> str:
     return os.path.join(get_refined_show_index_directory(), f"{show_id}.yaml")
+
+def get_audio_file_path_by_id(show_id) -> str:
+    date = extract_date_from_string(show_id)
+    filename = f"{show_id}.mp3"
+    return os.path.join(get_archive_root(), str(date.year), filename)
 
 
 def get_transcript_to_script_match_files() -> Iterator[str]:
