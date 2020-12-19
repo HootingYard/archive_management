@@ -5,3 +5,4 @@ lxml
 PIL
 beautifulsoup4
 black
+Unidecode

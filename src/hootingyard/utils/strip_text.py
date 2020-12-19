@@ -16,6 +16,7 @@ import re
 import json
 import lxml.html
 from pathlib import Path
+import lxml.html
 from lxml.html import HtmlElement
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from typing import Dict
@@ -24,6 +25,7 @@ __all__ = []
 
 
 def main():
+    # noinspection PyTypeChecker
     parser = ArgumentParser(description=__doc__, formatter_class=RawDescriptionHelpFormatter)
     parser.add_argument('source', type=Path, help='a directory containing XHTML files')
     parser.add_argument('-o', '--output', type=Path, help='output directory for JSON files', required=True)
@@ -38,16 +40,15 @@ def main():
         sys.exit(1)
 
 
-def run(xhtml_dir: Path, 
-        json_dir: Path, 
-        overwrite_json_files: bool, 
+def run(xhtml_dir: Path,
+        json_dir: Path,
+        overwrite_json_files: bool,
         no_punctuation: bool,
         verbose: bool) -> None:
-
     for xhtml_path in xhtml_dir.glob(POST_GLOB):
 
         json_path = json_dir / (xhtml_path.stem + '.json')
-        if not overwrite_json_files and  json_path.exists():
+        if not overwrite_json_files and json_path.exists():
             continue
 
         if verbose:
@@ -62,9 +63,9 @@ def run(xhtml_dir: Path,
 
         data['date'] = date[1:-1]
         data['title'] = element_text(html, '//h1').strip()
-        data['url']   = html.xpath('//p[@class="postwebpage"]/a')[0].attrib['href']
-        data['file']  = xhtml_path.name
-        data['text']  = process_text(html, no_punctuation)
+        data['url'] = html.xpath('//p[@class="postwebpage"]/a')[0].attrib['href']
+        data['file'] = xhtml_path.name
+        data['text'] = process_text(html, no_punctuation)
 
         with open(json_path, mode='w') as file:
             json.dump(data, file)

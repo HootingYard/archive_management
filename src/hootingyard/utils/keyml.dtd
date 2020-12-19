@@ -18,7 +18,7 @@
     type CDATA #FIXED "text/css"
 >
 
-<!ELEMENT body (div | (div?, h1, (h2 | p | div | blockquote | ol | ul)+))>
+<!ELEMENT body ((h1, (h2 | p | div | blockquote | ol | ul)+)) >
 <!ATTLIST body class CDATA #IMPLIED>
 
 <!ELEMENT ol (li+) >
@@ -32,30 +32,35 @@
 <!ELEMENT h2 (#PCDATA | em)*>
 <!ATTLIST h2 class CDATA #IMPLIED>
 
-<!ELEMENT p (#PCDATA | em | strong | del | br | img | a | sup | small | tt)* >
-<!ATTLIST p class (noindent | center | verse | linebreaks | breakabove | textbreak | imagerow | caption | postwebpage | byline) #IMPLIED>
+<!ELEMENT p (#PCDATA | em | strong | del | br | img | a | sup | small | tt | span)* >
+<!ATTLIST p class (noindent | center | verse | linebreaks | breakabove | textbreak | imagerow | caption | postwebpage | byline | footnote | editor | centered | source) #IMPLIED>
+
+<!ELEMENT span (#PCDATA | em | strong | del | br | img | a | sup | small | tt | span)* >
+<!ATTLIST span class (mark | asterisk) #IMPLIED>
+
+<!ELEMENT tt (#PCDATA | strong | em)* >
+<!ATTLIST tt class (emoticon) #IMPLIED>
 
 
 <!ELEMENT blockquote (p | div | blockquote | ol | ul)+ >
 
 <!ENTITY  nbsp "&#38;#160;">
 
-<!ELEMENT em  (#PCDATA | em | strong | del | br | a | sup | small)*>
+<!ELEMENT em  (#PCDATA | em | strong | del | br | a | sup | small | span)*>
 <!ELEMENT del (#PCDATA | em | strong | br | a | sup | small)* >
 <!ELEMENT sup (#PCDATA | em | strong | del | br | a | small)* >
 <!ELEMENT small (#PCDATA | em | strong | del | br | a)* >
-<!ELEMENT tt (#PCDATA)* >
 
 <!ELEMENT strong (#PCDATA | em | strong | del | br | a | small)* >
 <!ATTLIST strong class (footnote) #IMPLIED>
 
 <!ELEMENT br EMPTY>
 
-<!ELEMENT a (#PCDATA | em | strong | del | sup | tt)*>
+<!ELEMENT a (#PCDATA | em | strong | del | sup | tt | img)*>
 <!ATTLIST a
     href  CDATA #REQUIRED
     title CDATA #IMPLIED
-    class (internal | external | hootingyard) #IMPLIED
+    class (internal | internal-pdf | internal-image | internal-audio | external | hootingyard) #IMPLIED
 >
 
 <!ELEMENT img EMPTY>
