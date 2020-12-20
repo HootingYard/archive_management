@@ -12,10 +12,12 @@ log = logging.getLogger(__name__)
 
 
 def main():
-    log.info("Calculating script word frquency.")
-    script_word_frequency.main()
     log.info("Calculating transcript word frquency.")
     transcript_word_frequency.main()
+
+    log.info("Calculating script word frquency.")
+    script_word_frequency.main()
+
     log.info("Building an index of scripts.")
     generate_script_index.main()
     log.info("Matching transcripts to scripts.")

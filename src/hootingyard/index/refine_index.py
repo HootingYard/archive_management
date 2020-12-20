@@ -1,10 +1,13 @@
 import logging
+import os
+from collections import defaultdict
 from dataclasses import dataclass
-from typing import List, Optional, Mapping, Any
+from typing import List, Optional, Mapping, Any, Iterator, DefaultDict, Set
 
 import yaml
 
 from hootingyard.audio.audio_file import AudioFile, get_audio_file_by_id
+from hootingyard.config.directories import get_refined_show_index_directory
 from hootingyard.config.files import (
     get_transcript_to_script_match_files,
     get_refined_show_contents_file,
@@ -112,10 +115,22 @@ class RefinedShow:
             f"Hooting Yard on the Air: {self.get_most_significant_story().story.title}"
         )
 
+    def get_archive_org_url(self) -> str:
+        pass
+
 
 def get_refined_index_by_id(index_id: str) -> RefinedShow:
+    """
+    @Glyn, this is probably the function you need to call to get a single RefinedShow object.
+    """
     with open(get_refined_show_contents_file(index_id)) as index_file:
         return RefinedShow.from_dict(**yaml.safe_load(index_file))
+
+
+def get_all_refined_shows() -> Iterator[RefinedShow]:
+    for filename in os.listdir(get_refined_show_index_directory()):
+        id, _ = filename.rsplit(".", maxsplit=1)
+        yield get_refined_index_by_id(id)
 
 
 if __name__ == "__main__":
