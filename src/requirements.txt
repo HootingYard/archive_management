@@ -8,3 +8,5 @@ black
 Unidecode
 mutagen
 internetarchive
+eyed3
+

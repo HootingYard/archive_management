@@ -1,4 +1,5 @@
 import logging
+import math
 import os
 from collections import defaultdict
 from dataclasses import dataclass
@@ -75,6 +76,7 @@ def main():
 class StoryInShow:
     time_code: int
     story: str
+    next_story: Optional["StoryInShow"]
 
     def get_story_info(self) -> StoryInfo:
         return get_story_info_by_id(self.story)
@@ -87,7 +89,18 @@ class RefinedShow:
 
     @classmethod
     def from_dict(cls, id: str, stories: List[Mapping[str, Any]]):
-        return cls(id=id, stories=[StoryInShow(**s) for s in stories])
+        stories_in_show = []
+
+        next_story:Optional[StoryInShow] = None
+
+        for s in reversed(stories):
+            the_story = StoryInShow(next_story=next_story, **s)
+            stories_in_show.append(
+                the_story
+            )
+            next_story = the_story
+
+        return cls(id=id, stories=list(reversed(stories_in_show)))
 
     def get_audio_file(self) -> AudioFile:
         return get_audio_file_by_id(self.id)
@@ -112,11 +125,17 @@ class RefinedShow:
 
     def title(self):
         return (
-            f"Hooting Yard on the Air: {self.get_most_significant_story().story.title}"
+            f"{self.get_most_significant_story().story.title}"
         )
 
     def get_archive_org_url(self) -> str:
         pass
+
+    def album(self)->str:
+        return f"Hooting Yard {self.tx_date().year}"
+
+    def get_duration(self)->int:
+        return int(math.floor(self.get_audio_file().get_metadata().info.time_secs))
 
 
 def get_refined_index_by_id(index_id: str) -> RefinedShow:
