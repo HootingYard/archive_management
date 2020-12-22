@@ -1,8 +1,7 @@
-import itertools
 import logging
 
 from eyed3.core import Date
-from eyed3.id3 import TagException, ID3_DEFAULT_VERSION
+from eyed3.id3 import ID3_DEFAULT_VERSION
 
 from hootingyard.api.stories import get_all_show_information
 from hootingyard.audio.audio_file import AudioFile

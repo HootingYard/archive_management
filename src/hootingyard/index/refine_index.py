@@ -1,7 +1,7 @@
 import logging
 import math
 import os
-from collections import defaultdict
+import time
 from dataclasses import dataclass
 from typing import List, Optional, Mapping, Any, Iterator, DefaultDict, Set
 
@@ -78,6 +78,12 @@ class StoryInShow:
     story: str
     next_story: Optional["StoryInShow"]
 
+    def get_time_code_mmss(self)->str:
+        if self.time_code > 3600:
+            return time.strftime('%H:%M:%S', time.gmtime(self.time_code))
+        else:
+            return time.strftime('%M:%S', time.gmtime(self.time_code))
+
     def get_story_info(self) -> StoryInfo:
         return get_story_info_by_id(self.story)
 
@@ -137,6 +143,13 @@ class RefinedShow:
     def get_duration(self)->int:
         return int(math.floor(self.get_audio_file().get_metadata().info.time_secs))
 
+    def get_title_and_text(self)->str:
+        story_titles_and_text:List[str] = [s.get_story_info().get_title_and_text() for s in self.stories]
+        return "\n\n".join(story_titles_and_text)
+
+    def get_toc(self):
+        toc_lines:List[str] = [f"{s.get_story_info().story.title} - {s.get_time_code_mmss()}" for s in self.stories]
+        return "\n".join(toc_lines)
 
 def get_refined_index_by_id(index_id: str) -> RefinedShow:
     """
@@ -147,7 +160,7 @@ def get_refined_index_by_id(index_id: str) -> RefinedShow:
 
 
 def get_all_refined_shows() -> Iterator[RefinedShow]:
-    for filename in os.listdir(get_refined_show_index_directory()):
+    for filename in sorted(os.listdir(get_refined_show_index_directory())):
         id, _ = filename.rsplit(".", maxsplit=1)
         yield get_refined_index_by_id(id)
 

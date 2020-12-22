@@ -20,6 +20,9 @@ class StoryInfo:
             story=Story(**d["story"]), ngrams=d["ngrams"], word_count=d["word_count"]
         )
 
+    def get_title_and_text(self)->str:
+        return f"{self.story.title.upper()}\n\n{self.story.text}"
+
 
 def load_story_info_from_path(file_path: str) -> StoryInfo:
     with open(file_path) as story_file:

@@ -92,3 +92,8 @@ def test_get_chapter_start_end1():
 def test_get_show_length():
     rs = get_refined_index_by_id("hooting_yard_2007-05-09")
     assert rs.get_duration() == 1803
+
+def test_get_show_length():
+    rs = get_refined_index_by_id("hooting_yard_2007-05-09")
+    toc = rs.get_toc()
+    print("")
