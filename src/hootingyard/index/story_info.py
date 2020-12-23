@@ -21,7 +21,7 @@ class StoryInfo:
         )
 
     def get_title_and_text(self)->str:
-        return f"{self.story.title.upper()}\n\n{self.story.text}"
+        return f"{self.story.title.upper()}\n{self.story.text}"
 
 
 def load_story_info_from_path(file_path: str) -> StoryInfo:

@@ -14,14 +14,14 @@ log = logging.getLogger(__name__)
 IA_PRFX:str = "hy0"
 
 def upload_single_show_to_internetarchive(show_info:RefinedShow):
-    show_title = show_info.title()
+    show_title = f"Hooting Yard On The Air: {show_info.title()}"
     upload_id = f"{IA_PRFX}_{show_info.id}"
     log.info(f"Attempting to upload {show_info.id}, Title: {show_title}")
 
     show_text = show_info.get_title_and_text()
     show_toc = show_info.get_toc()
 
-    md = {'collection': 'opensource_audio',
+    md = {'collection': 'hooting-yard',
           'description': show_toc,
           'mediatype': 'audio',
           'title': show_title,
@@ -42,10 +42,19 @@ def upload_single_show_to_internetarchive(show_info:RefinedShow):
         assert r[0].status_code == 200
         log.info(f"Completed upload {show_info.id}")
 
+    return upload_id
+
 
 def main():
-    for show_info in itertools.islice(get_all_show_information(),0,50):
-        upload_single_show_to_internetarchive(show_info)
+    uploaded = []
+    for show_info in get_all_show_information():
+        uploaded.append(upload_single_show_to_internetarchive(show_info))
+
+    print("Modifined these items:")
+
+    for i in uploaded:
+        print(i)
+
 
 if __name__ == "__main__":
     logging.basicConfig()

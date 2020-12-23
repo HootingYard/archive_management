@@ -72,7 +72,7 @@ class Script:
 
     def get_text(self) -> str:
         return "\n".join(
-            unidecode.unidecode(p.get_text()) for p in self.get_paragraphs()
+            unidecode.unidecode(p.get_text()).strip() for p in self.get_paragraphs()
         )
 
     def get_metadata(self) -> Mapping[str, Union[str, str]]:
