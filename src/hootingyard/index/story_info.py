@@ -20,7 +20,7 @@ class StoryInfo:
             story=Story(**d["story"]), ngrams=d["ngrams"], word_count=d["word_count"]
         )
 
-    def get_title_and_text(self)->str:
+    def get_title_and_text(self) -> str:
         return f"{self.story.title.upper()}\n{self.story.text}"
 
 

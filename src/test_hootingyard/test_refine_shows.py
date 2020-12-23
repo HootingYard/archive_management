@@ -76,11 +76,13 @@ def test_get_show_title():
     rs = get_refined_index_by_id("hooting_yard_2007-05-02")
     assert rs.title() == "Hooting Yard on the Air: Rose Garden"
 
+
 def test_get_chapter_start_end0():
     rs = get_refined_index_by_id("hooting_yard_2007-05-02")
     first_story = rs.stories[0]
     assert first_story.time_code == 0
     assert first_story.next_story.time_code == 371
+
 
 def test_get_chapter_start_end1():
     rs = get_refined_index_by_id("hooting_yard_2007-05-09")
@@ -89,9 +91,11 @@ def test_get_chapter_start_end1():
     assert last_story.time_code == 1700
     assert last_story.next_story is None
 
+
 def test_get_show_length():
     rs = get_refined_index_by_id("hooting_yard_2007-05-09")
     assert rs.get_duration() == 1803
+
 
 def test_get_show_length():
     rs = get_refined_index_by_id("hooting_yard_2007-05-09")

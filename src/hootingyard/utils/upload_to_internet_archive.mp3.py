@@ -1,4 +1,3 @@
-import itertools
 import logging
 import pprint
 
@@ -11,9 +10,10 @@ from hootingyard.index.refine_index import RefinedShow
 
 log = logging.getLogger(__name__)
 
-IA_PRFX:str = "hy0"
+IA_PRFX: str = "hy0"
 
-def upload_single_show_to_internetarchive(show_info:RefinedShow):
+
+def upload_single_show_to_internetarchive(show_info: RefinedShow):
     show_title = f"Hooting Yard On The Air: {show_info.title()}"
     upload_id = f"{IA_PRFX}_{show_info.id}"
     log.info(f"Attempting to upload {show_info.id}, Title: {show_title}")
@@ -21,24 +21,29 @@ def upload_single_show_to_internetarchive(show_info:RefinedShow):
     show_text = show_info.get_title_and_text()
     show_toc = show_info.get_toc()
 
-    md = {'collection': 'hooting-yard',
-          'description': show_toc,
-          'mediatype': 'audio',
-          'title': show_title,
-          'creator': "Frank Key",
-          'date': show_info.tx_date().isoformat(),
-          'notes': show_text,
-          }
-
+    md = {
+        "collection": "hooting-yard",
+        "description": show_toc,
+        "mediatype": "audio",
+        "title": show_title,
+        "creator": "Frank Key",
+        "date": show_info.tx_date().isoformat(),
+        "notes": show_text,
+    }
 
     log.info(f"Metadata: {pprint.pformat(md)}")
 
     try:
-        item:Item = get_item(upload_id)
+        item: Item = get_item(upload_id)
         log.info(f"Found an item: {item}")
         item.modify_metadata(metadata=md)
     except internetarchive.exceptions.ItemLocateError:
-        r = upload(identifier=upload_id, files=[show_info.get_audio_file().path], metadata=md, verbose=True)
+        r = upload(
+            identifier=upload_id,
+            files=[show_info.get_audio_file().path],
+            metadata=md,
+            verbose=True,
+        )
         assert r[0].status_code == 200
         log.info(f"Completed upload {show_info.id}")
 

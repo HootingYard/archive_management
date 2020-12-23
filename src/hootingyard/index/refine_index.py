@@ -78,11 +78,11 @@ class StoryInShow:
     story: str
     next_story: Optional["StoryInShow"]
 
-    def get_time_code_mmss(self)->str:
+    def get_time_code_mmss(self) -> str:
         if self.time_code > 3600:
-            return time.strftime('%H:%M:%S', time.gmtime(self.time_code))
+            return time.strftime("%H:%M:%S", time.gmtime(self.time_code))
         else:
-            return time.strftime('%M:%S', time.gmtime(self.time_code))
+            return time.strftime("%M:%S", time.gmtime(self.time_code))
 
     def get_story_info(self) -> StoryInfo:
         return get_story_info_by_id(self.story)
@@ -97,13 +97,11 @@ class RefinedShow:
     def from_dict(cls, id: str, stories: List[Mapping[str, Any]]):
         stories_in_show = []
 
-        next_story:Optional[StoryInShow] = None
+        next_story: Optional[StoryInShow] = None
 
         for s in reversed(stories):
             the_story = StoryInShow(next_story=next_story, **s)
-            stories_in_show.append(
-                the_story
-            )
+            stories_in_show.append(the_story)
             next_story = the_story
 
         return cls(id=id, stories=list(reversed(stories_in_show)))
@@ -130,26 +128,30 @@ class RefinedShow:
         return extract_date_from_string(self.id)
 
     def title(self):
-        return (
-            f"{self.get_most_significant_story().story.title}"
-        )
+        return f"{self.get_most_significant_story().story.title}"
 
     def get_archive_org_url(self) -> str:
         pass
 
-    def album(self)->str:
+    def album(self) -> str:
         return f"Hooting Yard {self.tx_date().year}"
 
-    def get_duration(self)->int:
+    def get_duration(self) -> int:
         return int(math.floor(self.get_audio_file().get_metadata().info.time_secs))
 
-    def get_title_and_text(self)->str:
-        story_titles_and_text:List[str] = [s.get_story_info().get_title_and_text() for s in self.stories]
+    def get_title_and_text(self) -> str:
+        story_titles_and_text: List[str] = [
+            s.get_story_info().get_title_and_text() for s in self.stories
+        ]
         return "\n\n".join(story_titles_and_text)
 
     def get_toc(self):
-        toc_lines:List[str] = [f"{s.get_story_info().story.title} - {s.get_time_code_mmss()}" for s in self.stories]
+        toc_lines: List[str] = [
+            f"{s.get_story_info().story.title} - {s.get_time_code_mmss()}"
+            for s in self.stories
+        ]
         return "\n".join(toc_lines)
+
 
 def get_refined_index_by_id(index_id: str) -> RefinedShow:
     """

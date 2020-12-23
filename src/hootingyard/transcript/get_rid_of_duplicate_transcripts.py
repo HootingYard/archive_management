@@ -13,8 +13,8 @@ class DuplicateStatus:
     bad_file: Optional[str]
 
 
-def get_duplicated_file_name(file_name:str):
-    file_name_without_extension, _=file_name.rsplit(".", maxsplit=1)
+def get_duplicated_file_name(file_name: str):
+    file_name_without_extension, _ = file_name.rsplit(".", maxsplit=1)
     return f"{file_name_without_extension} (1).txt"
 
 
@@ -34,22 +34,21 @@ def main():
 
         if os.path.exists(original_file_path) and os.path.exists(duplicated_file_path):
 
-
-            t0:Transcript = get_transcript_by_filename(file_name)
-            t1:Transcript = get_transcript_by_filename(duplicated_file_name)
+            t0: Transcript = get_transcript_by_filename(file_name)
+            t1: Transcript = get_transcript_by_filename(duplicated_file_name)
 
             speaker0 = next(t0.paragraphs()).speaker
             speaker1 = next(t1.paragraphs()).speaker
 
             if speaker0 == "Unknown Speaker":
-                print(f"Duplicate found: {file_name}->{speaker0}, {duplicated_file_name}->{speaker1}")
-                commands.append(f"cp \"{duplicated_file_name}\" {file_name}")
+                print(
+                    f"Duplicate found: {file_name}->{speaker0}, {duplicated_file_name}->{speaker1}"
+                )
+                commands.append(f'cp "{duplicated_file_name}" {file_name}')
 
-            commands.append(f"git rm \"{duplicated_file_name}\"")
-
+            commands.append(f'git rm "{duplicated_file_name}"')
 
     print("\n".join(commands))
-
 
 
 if __name__ == "__main__":
