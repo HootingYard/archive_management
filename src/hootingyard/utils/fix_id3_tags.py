@@ -19,6 +19,9 @@ def fix_id3_for_show(show_info: RefinedShow):
     audio: AudioFile = show_info.get_audio_file()
     metadata = audio.get_metadata()
 
+    if not metadata.tag:
+        metadata.initTag()
+
     metadata.tag.title = show_info.title()
     metadata.tag.album = show_info.album()
 
