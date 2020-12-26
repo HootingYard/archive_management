@@ -1,5 +1,10 @@
+<!ENTITY  nbsp "&#xa0;">
+
 <!ELEMENT html (head, body)>
-<!ATTLIST html xmlns CDATA #FIXED "http://www.w3.org/1999/xhtml">
+<!ATTLIST html 
+   xmlns CDATA #FIXED "http://www.w3.org/1999/xhtml"
+   xmlns:xsi CDATA #IMPLIED
+>
 
 <!ELEMENT head (meta?, title, meta, meta, meta, meta, meta, meta, link)>
 
@@ -18,33 +23,40 @@
     type CDATA #FIXED "text/css"
 >
 
-<!ELEMENT body ((h1, (h2 | p | div | blockquote | ol | ul)+)) >
+<!ELEMENT body ((div?, h1, (h2 | p | hr | div | blockquote | ol | ul)+)) >
 <!ATTLIST body class CDATA #IMPLIED>
 
 <!ELEMENT ol (li+) >
-<!ATTLIST ol class (contents) #IMPLIED>
+<!ATTLIST ol 
+    class (contents) #IMPLIED
+    start CDATA #IMPLIED
+>
 <!ELEMENT ul (li+) >
-<!ELEMENT li (#PCDATA | p | ol | ul | a | br)* >
+<!ELEMENT li (#PCDATA | p | ol | ul | a | br | em)* >
 
 <!ELEMENT h1 (#PCDATA | em)*>
-<!ATTLIST h1 class CDATA #IMPLIED>
+<!ATTLIST h1 
+ class (plain | center | discrete | preen) #IMPLIED
+ id CDATA #IMPLIED >
 
-<!ELEMENT h2 (#PCDATA | em)*>
-<!ATTLIST h2 class CDATA #IMPLIED>
+<!ELEMENT h2 (#PCDATA | em | a)*> 
+<!ATTLIST h2 class (plain | center | discrete | preen) #IMPLIED>
 
 <!ELEMENT p (#PCDATA | em | strong | del | br | img | a | sup | small | tt | span)* >
-<!ATTLIST p class (noindent | center | verse | linebreaks | breakabove | textbreak | imagerow | caption | postwebpage | byline | footnote | editor | centered | source) #IMPLIED>
+<!ATTLIST p class (noindent | center | verse | linebreaks | breakabove | textbreak | imagerow | caption | postwebpage | byline | footnote | editor | centered | source | invisible) #IMPLIED>
+
+<!ELEMENT hr EMPTY>
 
 <!ELEMENT span (#PCDATA | em | strong | del | br | img | a | sup | small | tt | span)* >
-<!ATTLIST span class (mark | asterisk) #IMPLIED>
+<!ATTLIST span 
+ class (mark | asterisk | broken) #IMPLIED
+ title CDATA #IMPLIED >
 
 <!ELEMENT tt (#PCDATA | strong | em)* >
 <!ATTLIST tt class (emoticon) #IMPLIED>
 
 
 <!ELEMENT blockquote (p | div | blockquote | ol | ul)+ >
-
-<!ENTITY  nbsp "&#38;#160;">
 
 <!ELEMENT em  (#PCDATA | em | strong | del | br | a | sup | small | span)*>
 <!ELEMENT del (#PCDATA | em | strong | br | a | sup | small)* >
@@ -70,5 +82,5 @@
     class (size-full | size-medium | size-large | small | fullwidth) #IMPLIED
 >
 
-<!ELEMENT div (p | div)* >
-<!ATTLIST div class (illustration | illustrationfullwidth | illustrationsmall | illustrationhere | blockparagraphs | verse | newpage) #REQUIRED>
+<!ELEMENT div (h2 | p | hr | div)* >
+<!ATTLIST div class (contents | illustration | illustrationfullwidth | illustrationsmall | illustrationhere | blockparagraphs | verse | newpage) #REQUIRED>

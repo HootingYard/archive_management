@@ -13,15 +13,14 @@ from urllib.request import url2pathname
 from typing import List
 
 from PIL import Image
+from lxml.html import XHTMLParser
 from lxml.etree import (
-    XMLParser,
     DTD,
     DocumentInvalid,
     DTDParseError,
     XMLSyntaxError,
     parse,
-)
-from lxml.etree import (
+    clear_error_log,
     _Element,
 )  # this is okay to do, it is just used for the type interface
 
@@ -83,34 +82,31 @@ def main():
 
 
 def run(xhtml_files: List[Path], dtd_file: Path, images: bool, links: bool) -> bool:
-    success = False
-    try:
-        dtd = DTD(file=str(dtd_file))
-    except DTDParseError as e:
-        print(str(e.error_log), file=stderr)
-    else:
-        success = True
-        for file in xhtml_files:
-            if not test(file, dtd, images, links):
-                success = False
+    success = True
+    for file in xhtml_files:
+        if not test(file, dtd_file, images, links):
+            success = False
     return success
 
 
-def test(xhtml_file: Path, dtd: DTD, images: bool, links: bool) -> bool:
+def test(xhtml_file: Path, dtd_file: Path, images: bool, links: bool) -> bool:
     if settings.verbose:
         print(xhtml_file)
     success = False
+    parser = XHTMLParser(dtd_validation=True, ns_clean=True)
+    dtd = DTD(open(dtd_file))
     try:
-        document = parse(
-            source=str(xhtml_file), parser=XMLParser(resolve_entities=False)
-        ).getroot()
+        document = parse(source=str(xhtml_file), parser=parser).getroot()
         dtd.assertValid(document)
     except IOError as e:
         print(f"{xhtml_file}: {e.strerror}", file=stderr)
+        clear_error_log()
     except XMLSyntaxError as e:
         print(str(e.error_log), file=stderr)
+        clear_error_log()
     except DocumentInvalid as e:
         print(str(e.error_log), file=stderr)
+        clear_error_log()
     else:
         success = True
         if images:
