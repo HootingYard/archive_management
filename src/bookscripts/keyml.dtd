@@ -35,7 +35,7 @@ will be rejected.
 
 <!-- content types -->
 
-<!ENTITY % BLOCK "p | hr | div | blockquote | ol | ul"> 
+<!ENTITY % BLOCK "p | hr | div | blockquote | ol | ul | h2"> 
 
 <!ENTITY % TITLE "#PCDATA | em" > 
 
@@ -101,7 +101,7 @@ will be rejected.
      
      One text div may proceed the title if necessary. -->
 
-<!ELEMENT body ((div?, h1, (h2 | %BLOCK; )+)) >
+<!ELEMENT body ((div?, h1, ( %BLOCK; )+)) >
 
 <!ATTLIST body class CDATA #IMPLIED>
 
