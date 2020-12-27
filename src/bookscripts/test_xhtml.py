@@ -6,6 +6,7 @@ and relatively linked images can be checked for validity.
 
 Example: python3 test_xhtml.py -i -d keyml.dtd bigbook/Text/[0-9]*.xhtml
 """
+
 from sys import stderr, exit
 from pathlib import Path
 from argparse import ArgumentParser
@@ -20,9 +21,13 @@ from lxml.etree import (
     DTDParseError,
     XMLSyntaxError,
     parse,
-    clear_error_log,
+    clear_error_log
+)
+
+# This is okay to do because it is only used by typing:
+from lxml.etree import (
     _Element,
-)  # this is okay to do, it is just used for the type interface
+)  
 
 
 __all__ = []  # not a module
@@ -82,37 +87,45 @@ def main():
 
 
 def run(xhtml_files: List[Path], dtd_file: Path, images: bool, links: bool) -> bool:
-    success = True
-    for file in xhtml_files:
-        if not test(file, dtd_file, images, links):
-            success = False
-    return success
-
-
-def test(xhtml_file: Path, dtd_file: Path, images: bool, links: bool) -> bool:
-    if settings.verbose:
-        print(xhtml_file)
-    success = False
-    parser = XHTMLParser(dtd_validation=True, ns_clean=True)
-    dtd = DTD(open(dtd_file))
     try:
-        document = parse(source=str(xhtml_file), parser=parser).getroot()
-        dtd.assertValid(document)
-    except IOError as e:
-        print(f"{xhtml_file}: {e.strerror}", file=stderr)
+        dtd = DTD(str(dtd_file))
+    except DTDParseError as e:
+        print(e.error_log, file=stderr)
         clear_error_log()
-    except XMLSyntaxError as e:
-        print(str(e.error_log), file=stderr)
-        clear_error_log()
-    except DocumentInvalid as e:
-        print(str(e.error_log), file=stderr)
-        clear_error_log()
+        return False
     else:
         success = True
-        if images:
-            success = success and test_images(xhtml_file, document)
-        if links:
-            success = success and test_links(xhtml_file, document)
+        for file in xhtml_files:
+            # if you reuse the parser on too many documents it gets confused
+            parser = XHTMLParser(dtd_validation=True, ns_clean=True)
+            dtd = DTD(str(dtd_file))
+            if settings.verbose:
+                print(xhtml_file)
+            if not test(file, parser, dtd, images, links):
+                success = False
+        return success
+
+
+def test(xhtml_file: Path, parser: XHTMLParser, dtd: DTD, images: bool, links: bool) -> bool:
+    success = False
+    try:
+        try:
+            document = parse(source=str(xhtml_file), parser=parser).getroot()
+            dtd.assertValid(document)
+        except IOError as e:
+            print(f"{xhtml_file}: {e.strerror}", file=stderr)
+        except XMLSyntaxError as e:
+            print(str(e.error_log), file=stderr)
+        except DocumentInvalid as e:
+            print(str(e.error_log), file=stderr)
+        else:
+            success = True
+            if images:
+                success = success and test_images(xhtml_file, document)
+            if links:
+                success = success and test_links(xhtml_file, document)
+    finally:
+        clear_error_log()
     return success
 
 
