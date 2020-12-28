@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 from typing import Iterator
 
 from hootingyard.config.directories import (
@@ -49,6 +50,10 @@ def get_audio_file_path_by_id(show_id) -> str:
     date = extract_date_from_string(show_id)
     filename = f"{show_id}.mp3"
     return os.path.join(get_archive_root(), str(date.year), filename)
+
+def get_audio_file_name_iterator()->Iterator[str]:
+    for file_path in Path(get_archive_root()).glob("**/*.mp3"):
+        yield str(file_path)
 
 
 def get_transcript_to_script_match_files() -> Iterator[str]:

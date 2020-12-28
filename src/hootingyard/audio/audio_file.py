@@ -1,10 +1,11 @@
 import os
 from dataclasses import dataclass
+from typing import Iterator
 
 import eyed3
 import eyed3.mp3
 
-from hootingyard.config.files import get_audio_file_path_by_id
+from hootingyard.config.files import get_audio_file_path_by_id, get_audio_file_name_iterator
 
 
 class AudioFileError(RuntimeError):
@@ -21,9 +22,20 @@ class AudioFile:
     def get_metadata(self) -> eyed3.mp3.Mp3AudioFile:
         return eyed3.load(self.path)
 
+    def get_id(self)->str:
+        fn = os.path.basename(self.path)
+        the_id, _ = fn.rsplit(".", maxsplit=1)
+        return the_id
+
+
 
 def get_audio_file_by_id(id: str) -> AudioFile:
     audio_path_file: str = get_audio_file_path_by_id(id)
     if not os.path.exists(audio_path_file):
         raise AudioFileError("The file does not exist.")
     return AudioFile(path=audio_path_file)
+
+def get_audio_file_iterator()->Iterator[AudioFile]:
+    for p in get_audio_file_name_iterator():
+        yield AudioFile(path=p)
+

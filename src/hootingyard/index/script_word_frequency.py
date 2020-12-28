@@ -9,12 +9,12 @@ import yaml
 
 from hootingyard.config.directories import get_statistics_directory
 from hootingyard.config.files import script_word_frequency_yaml_file_path
-from hootingyard.index.story_info import get_story_infos
+from hootingyard.script.generators import get_stories_from_scripts
 
 
 def words_iterator() -> Iterator[str]:
-    for story_info in get_story_infos():
-        yield from story_info.story.word_iterator()
+    for story in get_stories_from_scripts():
+        yield from story.word_iterator()
 
 
 def main():

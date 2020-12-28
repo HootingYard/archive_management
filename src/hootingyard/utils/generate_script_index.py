@@ -13,7 +13,7 @@ from hootingyard.index.ngram_to_script_index import save_ngram_to_script_index
 from hootingyard.index.story_info import StoryInfo
 from hootingyard.index.script_word_frequency import script_word_frequency
 from hootingyard.index.transcript_word_frequency import transcript_word_frequency
-from hootingyard.script.generators import get_scripts
+from hootingyard.script.generators import get_scripts, get_stories_from_scripts
 
 log = logging.getLogger(__name__)
 
@@ -28,9 +28,7 @@ def main(min_ngrams_per_story=5, max_ngrams_per_story=400, ngram_length=3):
     def ngram_filter_function(ngram: List[str]) -> bool:
         return all(transcript_word_frequency_function(w) for w in ngram)
 
-    for script in get_scripts():
-        story = script.get_story()
-        story.validate()
+    for story in get_stories_from_scripts():
         log.info(f"Writing {story.id}: {story.title}")
         story_filename = f"{story.id}.yaml"
         story_path = os.path.join(stories_dirctory, story_filename)
