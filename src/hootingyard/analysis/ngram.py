@@ -2,7 +2,7 @@ import heapq
 from collections import deque
 from dataclasses import dataclass
 from functools import reduce
-from typing import TypeVar, Iterator, List, Callable
+from typing import TypeVar, Iterator, List, Callable, Set, Tuple
 
 T = TypeVar("T")
 
@@ -15,10 +15,14 @@ class NgramWithScore:
 
 def ngrams(n: int, inp: Iterator[T]) -> Iterator[List[T]]:
     d = deque(maxlen=n)
+    found:Set[int] = set()
     for i in inp:
         d.append(i)
         if len(d) == n:
-            yield list(d)
+            hashed_ngram = hash(tuple(d))
+            if not hashed_ngram in found:
+                found.add(hashed_ngram)
+                yield list(d)
 
 
 def trigrams(inp: Iterator[T]) -> Iterator[List[T]]:
@@ -42,12 +46,15 @@ def score_ngrams(
 
 def get_ngrams(
     ngram_length, max_ngrams, wf_scoring_function, filter_function, word_iterator
-):
+)->List[str]:
     trigrams = [
         n for n in ngrams(n=ngram_length, inp=word_iterator) if filter_function(n)
     ]
     scored_ngrams = score_ngrams(
         ngrams_iterator=trigrams, scoring_function=wf_scoring_function
     )
-    best_ngrams = heapq.nsmallest(max_ngrams, scored_ngrams, key=lambda x: x.score)
-    return [h.ngram for h in best_ngrams]
+
+    scored_ngrams = list(scored_ngrams)
+
+    best_ngrams = heapq.nlargest(max_ngrams, scored_ngrams, key=lambda x: x.score)
+    return [" ".join(h.ngram) for h in best_ngrams]

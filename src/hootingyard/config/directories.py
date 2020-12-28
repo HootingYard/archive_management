@@ -52,4 +52,4 @@ def get_refined_show_index_directory():
 
 
 def get_external_scripts_directory():
-    return os.path.join(get_analysis_directory(), "external_data", "externa_texts")
+    return os.path.join(get_analysis_directory(), "external_data", "external_texts")
