@@ -131,7 +131,7 @@ class RefinedShow:
         return f"{self.get_most_significant_story().story.title}"
 
     def get_archive_org_url(self) -> str:
-        pass
+        return f"https://archive.org/details/hy0_{self.id}"
 
     def album(self) -> str:
         return f"Hooting Yard {self.tx_date().year}"
