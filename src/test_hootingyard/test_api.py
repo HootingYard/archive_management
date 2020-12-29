@@ -31,4 +31,4 @@ def test_get_all_show_information():
 def test_get_story_to_show_index():
     index = get_story_to_show_index()
     assert index["2007-02-07-chump-and-flapper"] == {"hooting_yard_2007-02-07"}
-    assert index["2006-12-13-paupers-drool"] == {"hooting_yard_2007-12-06"}
+    assert index["2006-12-13-paupers-drool"] == {'hooting_yard_2007-12-06', 'hooting_yard_2006-12-13'}
