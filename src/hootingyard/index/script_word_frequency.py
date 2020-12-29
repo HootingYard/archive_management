@@ -1,5 +1,3 @@
-import csv
-import itertools
 import logging
 import os
 from collections import Counter
@@ -10,9 +8,7 @@ import yaml
 
 from hootingyard.config.directories import get_statistics_directory
 from hootingyard.config.files import script_word_frequency_yaml_file_path
-from hootingyard.external_scripts.external_scripts import get_external_stories
 from hootingyard.index.all_stories_iterator import all_stories_iterator
-from hootingyard.script.generators import get_stories_from_scripts
 
 
 def words_iterator() -> Iterator[str]:

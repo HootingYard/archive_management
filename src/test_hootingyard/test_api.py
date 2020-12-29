@@ -30,5 +30,5 @@ def test_get_all_show_information():
 @functools.lru_cache()
 def test_get_story_to_show_index():
     index = get_story_to_show_index()
-    assert index["2007-02-07-chump-and-flapper"] == set(["hooting_yard_2007-02-07"])
-    assert index["2006-12-13-paupers-drool"] == set(["hooting_yard_2007-12-06"])
+    assert index["2007-02-07-chump-and-flapper"] == {"hooting_yard_2007-02-07"}
+    assert index["2006-12-13-paupers-drool"] == {"hooting_yard_2007-12-06"}
