@@ -74,7 +74,7 @@ def test_get_tx_date():
 
 def test_get_show_title():
     rs = get_refined_index_by_id("hooting_yard_2007-05-02")
-    assert rs.title() == "Hooting Yard on the Air: Rose Garden"
+    assert rs.title() == "Rose Garden"
 
 
 def test_get_chapter_start_end0():

@@ -19,7 +19,7 @@ def get_scripts() -> Iterator[Script]:
 
     root: str = get_big_book_scripts_dirctory()
 
-    for filename in os.listdir(root):
+    for filename in sorted(os.listdir(root)):
         if filename not in non_scripts:
             yield from get_script_from_file_path(filename, root)
     #

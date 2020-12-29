@@ -11,7 +11,7 @@ from hootingyard.index.story import Story
 @dataclass
 class StoryInfo:
     story: Story
-    ngrams: List[List[str]]
+    ngrams: List[str]
     word_count: int
 
     @classmethod

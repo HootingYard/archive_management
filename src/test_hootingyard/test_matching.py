@@ -16,5 +16,5 @@ def test_that_l_trigrams_from_the_script_are_in_the_index():
     )
     ngram_lookup_function = ngram_to_script_index()
     for ngram in story_info.ngrams:
-        result = ngram_lookup_function(tuple(ngram))
+        result = ngram_lookup_function(ngram)
         assert story_info.story.id in result

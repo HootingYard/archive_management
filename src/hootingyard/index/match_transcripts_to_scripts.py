@@ -45,7 +45,7 @@ def match_single_transcript(ngram_lookup_function, t):
     for p in t.paragraphs():
         found_matches = []
         for ngram in trigrams(p.word_iterator()):
-            hashable_ngram = tuple(ngram)
+            hashable_ngram = " ".join(ngram)
             matches = ngram_lookup_function(hashable_ngram)
             for found_script_id in matches:
                 found_matches.append(found_script_id)
