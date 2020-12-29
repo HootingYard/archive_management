@@ -16,7 +16,7 @@ def words_iterator() -> Iterator[str]:
         yield from story.word_iterator()
 
 
-def word_filter(w:str):
+def word_filter(w: str):
     return len(w) > 2
 
 

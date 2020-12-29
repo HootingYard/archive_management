@@ -15,7 +15,7 @@ class NgramWithScore:
 
 def ngrams(n: int, inp: Iterator[T]) -> Iterator[List[T]]:
     d = deque(maxlen=n)
-    found:Set[int] = set()
+    found: Set[int] = set()
     for i in inp:
         d.append(i)
         if len(d) == n:
@@ -46,7 +46,7 @@ def score_ngrams(
 
 def get_ngrams(
     ngram_length, max_ngrams, wf_scoring_function, filter_function, word_iterator
-)->List[str]:
+) -> List[str]:
     trigrams = [
         n for n in ngrams(n=ngram_length, inp=word_iterator) if filter_function(n)
     ]

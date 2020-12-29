@@ -38,7 +38,7 @@ def main(min_ngrams_per_story=5, max_ngrams_per_story=400, ngram_length=3):
             max(min_ngrams_per_story, math.floor(word_count / 8)), max_ngrams_per_story
         )
 
-        ngrams:List[str] = get_ngrams(
+        ngrams: List[str] = get_ngrams(
             ngram_length=ngram_length,
             max_ngrams=ngram_count,
             wf_scoring_function=script_word_frequency_function,
