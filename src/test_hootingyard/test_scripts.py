@@ -40,4 +40,4 @@ def test_get_story_from_generator():
     first_script = next(get_scripts())
     first_story = first_script.get_story()
 
-    assert first_story.title == '"The Volting of the Body, which many..."'
+    assert first_story.title == 'A Hooting Yard Primer'

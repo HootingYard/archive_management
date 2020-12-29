@@ -76,6 +76,10 @@ def test_get_show_title():
     rs = get_refined_index_by_id("hooting_yard_2007-05-02")
     assert rs.title() == "Rose Garden"
 
+def test_get_show_ia_url():
+    rs = get_refined_index_by_id("hooting_yard_2007-05-02")
+    assert rs.get_archive_org_url() == "https://archive.org/details/hy0_hooting_yard_2007-05-02"
+
 
 def test_get_chapter_start_end0():
     rs = get_refined_index_by_id("hooting_yard_2007-05-02")

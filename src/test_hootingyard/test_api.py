@@ -79,4 +79,4 @@ def test_that_you_can_get_show_objects_from_narratives():
         story_id="2004-05-17-life-and-loves-of-the-immersion-man"
     )
     first_narration = next(narrations)
-    assert first_narration.get_show().tx_date() == datetime.date(2014, 5, 29)
+    assert first_narration.get_show().tx_date() == datetime.date(2005, 5, 11)
