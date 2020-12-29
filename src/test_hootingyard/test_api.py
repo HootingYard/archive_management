@@ -27,7 +27,6 @@ def test_get_all_show_information():
     assert isinstance(next(shows), RefinedShow)
 
 
-@functools.lru_cache()
 def test_get_story_to_show_index():
     index = get_story_to_show_index()
     assert index["2007-02-07-chump-and-flapper"] == {"hooting_yard_2007-02-07"}
