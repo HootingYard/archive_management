@@ -21,13 +21,13 @@ from lxml.etree import (
     DTDParseError,
     XMLSyntaxError,
     parse,
-    clear_error_log
+    clear_error_log,
 )
 
 # This is okay to do because it is only used by typing:
 from lxml.etree import (
     _Element,
-)  
+)
 
 
 __all__ = []  # not a module
@@ -106,7 +106,9 @@ def run(xhtml_files: List[Path], dtd_file: Path, images: bool, links: bool) -> b
         return success
 
 
-def test(xhtml_file: Path, parser: XHTMLParser, dtd: DTD, images: bool, links: bool) -> bool:
+def test(
+    xhtml_file: Path, parser: XHTMLParser, dtd: DTD, images: bool, links: bool
+) -> bool:
     success = False
     try:
         try:

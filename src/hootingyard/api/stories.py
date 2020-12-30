@@ -1,7 +1,9 @@
 """
 Hooting Yard Indexes API.
 """
+import functools
 from collections import defaultdict
+from dataclasses import dataclass
 from typing import Iterator, DefaultDict, Mapping, Set
 
 from hootingyard.index.refine_index import (
@@ -9,7 +11,41 @@ from hootingyard.index.refine_index import (
     get_refined_index_by_id,
     get_all_refined_shows,
 )
+from hootingyard.index.story import Story
 from hootingyard.index.story_info import StoryInfo, get_story_info_by_id
+
+
+from typing import Set, Mapping, Optional
+
+
+@dataclass(eq=True, frozen=True)
+class Narration:
+    show_id: str
+    time_code: int
+    story_id: str
+
+    def get_show(self) -> RefinedShow:
+        return get_show_information(self.show_id)
+
+    def get_story(self) -> Story:
+        return get_story_info_by_id(story_id=self.story_id).story
+
+
+def get_narrations_for_story(story_id: str) -> Iterator[Narration]:
+    """
+    Given a story ID return an iterator of all the narrations of that story.
+    """
+    index = get_story_to_show_index()
+
+    for show_id in sorted(index[story_id]):
+        show_information = get_show_information(show_id=show_id)
+        for story_in_show in show_information.stories:
+            if story_in_show.story == story_id:
+                yield Narration(
+                    show_id=show_information.id,
+                    time_code=story_in_show.time_code,
+                    story_id=story_in_show.get_story_info().story.id,
+                )
 
 
 def get_story_information(story_id: str) -> StoryInfo:
@@ -49,6 +85,7 @@ def get_all_show_information() -> Iterator[RefinedShow]:
     yield from get_all_refined_shows()
 
 
+@functools.lru_cache()
 def get_story_to_show_index() -> Mapping[str, Set[str]]:
     """
     Return a dict which maps story IDs to a set of show IDs. This function

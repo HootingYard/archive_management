@@ -2,7 +2,10 @@ import os
 import logging
 from typing import Iterator
 
-from hootingyard.config.directories import get_big_book_scripts_dirctory, get_external_scripts_directory
+from hootingyard.config.directories import (
+    get_big_book_scripts_dirctory,
+    get_external_scripts_directory,
+)
 from hootingyard.index.story import Story
 from hootingyard.script.script import (
     Script,
@@ -31,6 +34,7 @@ def get_stories_from_scripts() -> Iterator[Story]:
         story = script.get_story()
         story.validate()
         yield story
+
 
 if __name__ == "__main__":
     for s in get_scripts():

@@ -9,7 +9,8 @@ from hootingyard.config.directories import (
     get_show_index_directory,
     get_refined_show_index_directory,
     get_matches_directory,
-    get_archive_root, get_external_scripts_directory,
+    get_archive_root,
+    get_external_scripts_directory,
 )
 from hootingyard.utils.date_utils import extract_date_from_string
 
@@ -51,14 +52,16 @@ def get_audio_file_path_by_id(show_id) -> str:
     filename = f"{show_id}.mp3"
     return os.path.join(get_archive_root(), str(date.year), filename)
 
-def get_audio_file_name_iterator()->Iterator[str]:
+
+def get_audio_file_name_iterator() -> Iterator[str]:
     for file_path in Path(get_archive_root()).glob("**/*.mp3"):
         yield str(file_path)
 
 
-def get_external_scripts_iterator()->Iterator[str]:
+def get_external_scripts_iterator() -> Iterator[str]:
     for file_path in Path(get_external_scripts_directory()).glob("*.txt"):
         yield str(file_path)
+
 
 def get_transcript_to_script_match_files() -> Iterator[str]:
     index_directory = get_matches_directory()

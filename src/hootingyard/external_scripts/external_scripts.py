@@ -15,7 +15,8 @@ class Story:
     text: str
 """
 
-def get_external_stories()->Iterator[Story]:
+
+def get_external_stories() -> Iterator[Story]:
     for script_file_path in get_external_scripts_iterator():
         with open(script_file_path) as sf:
 
@@ -28,12 +29,7 @@ def get_external_stories()->Iterator[Story]:
 
             story_id = f"external_{lower_title}-{iso_date}"
 
-            yield Story(
-                id=story_id,
-                title=title,
-                date=date,
-                text=text
-            )
+            yield Story(id=story_id, title=title, date=date, text=text)
 
 
 if __name__ == "__main__":

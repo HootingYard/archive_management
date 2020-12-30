@@ -2,7 +2,7 @@ from hootingyard.audio.audio_file import get_audio_file_iterator
 from hootingyard.index.refine_index import get_refined_index_by_id
 
 
-def has_refined_index(id:str)->bool:
+def has_refined_index(id: str) -> bool:
     try:
         get_refined_index_by_id(id)
     except FileNotFoundError:
