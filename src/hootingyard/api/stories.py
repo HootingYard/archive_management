@@ -37,7 +37,7 @@ def get_narrations_for_story(story_id: str) -> Iterator[Narration]:
     """
     index = get_story_to_show_index()
 
-    for show_id in sorted(index[story_id]):
+    for show_id in sorted(index.get(story_id, [])):
         show_information = get_show_information(show_id=show_id)
         for story_in_show in show_information.stories:
             if story_in_show.story == story_id:
