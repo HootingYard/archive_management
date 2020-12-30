@@ -4,7 +4,7 @@ from pathlib import Path
 from hootingyard.api.stories import get_narrations_for_story
 from hootingyard.config.directories import get_keyml_root  # , get_website_directory
 
-log = logging.getLogger("hootingyard.website_generation")
+log = logging.getLogger(__name__)
 
 #Website = Path(get_website_directory())
 Website = Path('~/Documents/hootingyard').expanduser()
