@@ -116,8 +116,12 @@ class RefinedShow:
             reverse=True,
         )
 
-    def get_most_significant_story(self) -> StoryInfo:
+    def get_most_significant_story(self) -> Optional[StoryInfo]:
         sorted_stories = self.get_stories_in_order_of_length()
+
+        if not sorted_stories:
+            return None
+
         total_word_count = sum(s.word_count for s in sorted_stories)
         if sorted_stories[0].word_count / total_word_count > 0.5:
             return sorted_stories[0]
@@ -128,7 +132,11 @@ class RefinedShow:
         return extract_date_from_string(self.id)
 
     def title(self):
-        return f"{self.get_most_significant_story().story.title}"
+        most_significant_story = self.get_most_significant_story()
+        if most_significant_story:
+            return f"{most_significant_story.story.title}"
+        else:
+            return f"Untitled show"
 
     def get_archive_org_url(self) -> str:
         return f"https://archive.org/details/hy0_{self.id}"

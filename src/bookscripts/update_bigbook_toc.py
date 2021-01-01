@@ -9,8 +9,6 @@ from typing import Dict, List
 from lxml.html import parse, fromstring, tostring, HtmlElement
 from copy import deepcopy
 
-from lxml.html.builder import DIV, CLASS
-
 
 class Settings:
     dummy_run: bool

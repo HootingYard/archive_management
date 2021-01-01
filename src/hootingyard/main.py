@@ -1,5 +1,6 @@
 import logging
 
+from hootingyard.api import shows_export
 from hootingyard.index import (
     script_word_frequency,
     transcript_word_frequency,
@@ -20,11 +21,15 @@ def main():
 
     log.info("Building an index of scripts.")
     generate_script_index.main()
+
     log.info("Matching transcripts to scripts.")
     match_transcripts_to_scripts.main()
+
     log.info("Refining the index.")
     refine_index.main()
 
+    log.info("Regenerate the export")
+    shows_export.main()
 
 if __name__ == "__main__":
     logging.basicConfig()

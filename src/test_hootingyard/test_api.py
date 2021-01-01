@@ -1,5 +1,4 @@
 import datetime
-import functools
 from typing import List
 
 from hootingyard.api.stories import (
@@ -39,6 +38,14 @@ def test_get_story_to_show_index():
         "hooting_yard_2006-12-13",
     }
 
+
+def test_that_some_stories_are_never_narrated():
+    narrations: List[Narration] = list(
+        get_narrations_for_story(
+            story_id="xxxx_fake_story"
+        )
+    )
+    assert narrations == []
 
 def test_find_when_a_story_is_narrated():
     expected = [

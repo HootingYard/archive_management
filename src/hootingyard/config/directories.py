@@ -50,6 +50,8 @@ def get_matches_directory():
 def get_refined_show_index_directory():
     return os.path.join(get_index_directory(), "refined_show_index")
 
+def get_export_directory():
+    return os.path.join(get_index_directory(), "export")
 
 def get_external_scripts_directory():
     return os.path.join(get_analysis_directory(), "external_data", "external_texts")
