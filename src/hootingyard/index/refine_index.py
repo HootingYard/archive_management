@@ -136,7 +136,7 @@ class RefinedShow:
         if most_significant_story:
             return f"{most_significant_story.story.title}"
         else:
-            return f"Untitled show"
+            return f"Hooting Yard {self.tx_date().isoformat()}"
 
     def get_archive_org_url(self) -> str:
         return f"https://archive.org/details/hy0_{self.id}"

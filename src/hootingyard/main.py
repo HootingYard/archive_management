@@ -7,7 +7,7 @@ from hootingyard.index import (
     match_transcripts_to_scripts,
     refine_index,
 )
-from hootingyard.utils import generate_script_index
+from hootingyard.utils import generate_story_index
 
 log = logging.getLogger(__name__)
 
@@ -20,7 +20,7 @@ def main():
     script_word_frequency.main()
 
     log.info("Building an index of scripts.")
-    generate_script_index.main()
+    generate_story_index.main()
 
     log.info("Matching transcripts to scripts.")
     match_transcripts_to_scripts.main()
