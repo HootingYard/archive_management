@@ -1,7 +1,8 @@
 import collections
-import re
 import logging
-from typing import Mapping, Callable
+import re
+from collections.abc import Mapping
+from typing import Callable
 
 import yaml
 
@@ -14,8 +15,8 @@ log = logging.getLogger(__name__)
 def _word_iterator():
     for t in get_transcripts():
         for p in t.paragraphs():
-            for island in re.split("[\s]+", p.text):
-                yield from re.findall("([a-zA-Z\-']+)", island)
+            for island in re.split(r"[\s]+", p.text):
+                yield from re.findall(r"([a-zA-Z\-']+)", island)
 
 
 def word_iterator():

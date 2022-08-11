@@ -1,5 +1,5 @@
 import itertools
-from typing import Iterator
+from collections.abc import Iterator
 
 from hootingyard.external_scripts.external_scripts import get_external_stories
 from hootingyard.index.story import Story

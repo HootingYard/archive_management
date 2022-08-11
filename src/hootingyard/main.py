@@ -2,10 +2,10 @@ import logging
 
 from hootingyard.api import shows_export
 from hootingyard.index import (
-    script_word_frequency,
-    transcript_word_frequency,
     match_transcripts_to_scripts,
     refine_index,
+    script_word_frequency,
+    transcript_word_frequency,
 )
 from hootingyard.utils import generate_story_index
 
@@ -30,6 +30,7 @@ def main():
 
     log.info("Regenerate the export")
     shows_export.main()
+
 
 if __name__ == "__main__":
     logging.basicConfig()

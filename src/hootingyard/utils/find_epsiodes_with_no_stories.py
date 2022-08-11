@@ -1,8 +1,9 @@
 import logging
+
 from hootingyard.api.stories import get_all_show_information
 
-
 log = logging.getLogger(__name__)
+
 
 def main():
     for show in get_all_show_information():

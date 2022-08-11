@@ -4,10 +4,10 @@ ID, style and class attributes are included because they add meaning to the stru
 of the document. (The contents of style attributes are ignored but default.)
 """
 
-from lxml.html import parse, HtmlElement
-from typing import Dict, List
 from argparse import ArgumentParser
 from pathlib import Path
+
+from lxml.html import HtmlElement, parse
 
 __all__ = []
 
@@ -15,7 +15,7 @@ __all__ = []
 class Settings:
     verbose: bool
     styles: bool
-    files: List[Path]
+    files: list[Path]
 
 
 settings = Settings()
@@ -47,15 +47,15 @@ def main():
     run(settings.files)
 
 
-def run(html: List[Path]) -> None:
+def run(html: list[Path]) -> None:
     dump(examine_all(html))
 
 
-Tree = Dict[str, "Tree"]
+Tree = dict[str, "Tree"]
 
 
 def dump(all_tags: Tree):
-    lines: List[str] = []
+    lines: list[str] = []
 
     def walk(tree: Tree, previous: str) -> None:
         for (tag, sub) in tree.items():
@@ -68,7 +68,7 @@ def dump(all_tags: Tree):
         print(line)
 
 
-def examine_all(file: List[Path]) -> Tree:
+def examine_all(file: list[Path]) -> Tree:
     tags = {}
     for filepath in file:
         if settings.verbose:

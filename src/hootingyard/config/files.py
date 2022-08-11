@@ -1,16 +1,16 @@
 import os
+from collections.abc import Iterator
 from pathlib import Path
-from typing import Iterator
 
 from hootingyard.config.directories import (
-    get_external_data_directory,
-    get_statistics_directory,
-    get_index_directory,
-    get_show_index_directory,
-    get_refined_show_index_directory,
-    get_matches_directory,
     get_archive_root,
-    get_external_scripts_directory, get_export_directory,
+    get_export_directory,
+    get_external_data_directory,
+    get_external_scripts_directory,
+    get_index_directory,
+    get_matches_directory,
+    get_refined_show_index_directory,
+    get_statistics_directory, get_openai_training_directory,
 )
 from hootingyard.utils.date_utils import extract_date_from_string
 
@@ -68,8 +68,12 @@ def get_transcript_to_script_match_files() -> Iterator[str]:
     for file_name in os.listdir(index_directory):
         yield os.path.join(index_directory, file_name)
 
+
 def get_export_file_path() -> str:
     export_directory = get_export_directory()
     if not os.path.exists(export_directory):
         os.makedirs(export_directory, exist_ok=True)
     return os.path.join(export_directory, "export.yaml")
+
+def get_training_file_path() ->Path:
+    return get_openai_training_directory() / "training.json"

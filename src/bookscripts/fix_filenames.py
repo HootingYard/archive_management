@@ -1,10 +1,10 @@
-import os
 import logging
+import os
 
 log = logging.getLogger(__name__)
 
 from hootingyard.config.directories import get_archive_root
-from hootingyard.utils.generators import get_show_archives, extract_date, WEEKDAYS
+from hootingyard.utils.generators import WEEKDAYS, extract_date, get_show_archives
 
 
 def main(warn_wednesday=False):

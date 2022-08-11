@@ -1,14 +1,15 @@
 import datetime
 import functools
-import os
 import logging
+import os
+from collections.abc import Mapping
 from dataclasses import dataclass
-from typing import Mapping, Union
+from typing import Union
 
 import unidecode
 from bs4 import BeautifulSoup
 
-from hootingyard.index.story import Story, InvalidStory
+from hootingyard.index.story import InvalidStory, Story
 
 log = logging.getLogger(__name__)
 

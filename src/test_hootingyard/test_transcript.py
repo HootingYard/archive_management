@@ -2,8 +2,8 @@ import datetime
 
 from hootingyard.transcript.transcript import (
     Transcript,
-    get_transcript_by_date,
     TranscriptParagraph,
+    get_transcript_by_date,
     get_transcript_by_filename,
 )
 

@@ -1,20 +1,16 @@
 import collections
-import datetime
 import logging
-import re
-from collections import defaultdict
-from typing import DefaultDict, List, TypeVar, Iterator, Mapping
+from collections.abc import Iterator, Mapping
+from typing import TypeVar
 
 import yaml
 
-from hootingyard.analysis.ngram import ngrams, trigrams
+from hootingyard.analysis.ngram import trigrams
 from hootingyard.config.files import (
-    transcript_to_script_matches,
     get_transcript_to_script_match_file,
 )
 from hootingyard.index.ngram_to_script_index import ngram_to_script_index
 from hootingyard.transcript.transcript import get_transcripts
-from hootingyard.utils.date_utils import extract_date_from_string
 
 log = logging.getLogger(__name__)
 

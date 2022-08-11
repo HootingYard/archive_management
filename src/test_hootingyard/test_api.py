@@ -1,13 +1,12 @@
 import datetime
-from typing import List
 
 from hootingyard.api.stories import (
-    get_story_information,
-    get_show_information,
-    get_all_show_information,
-    get_story_to_show_index,
     Narration,
+    get_all_show_information,
     get_narrations_for_story,
+    get_show_information,
+    get_story_information,
+    get_story_to_show_index,
 )
 from hootingyard.index.refine_index import RefinedShow
 from hootingyard.index.story_info import StoryInfo
@@ -40,12 +39,11 @@ def test_get_story_to_show_index():
 
 
 def test_that_some_stories_are_never_narrated():
-    narrations: List[Narration] = list(
-        get_narrations_for_story(
-            story_id="xxxx_fake_story"
-        )
+    narrations: list[Narration] = list(
+        get_narrations_for_story(story_id="xxxx_fake_story")
     )
     assert narrations == []
+
 
 def test_find_when_a_story_is_narrated():
     expected = [
@@ -65,7 +63,7 @@ def test_find_when_a_story_is_narrated():
             story_id="2004-05-17-life-and-loves-of-the-immersion-man",
         ),
     ]
-    narrations: List[Narration] = list(
+    narrations: list[Narration] = list(
         get_narrations_for_story(
             story_id="2004-05-17-life-and-loves-of-the-immersion-man"
         )

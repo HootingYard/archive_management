@@ -1,6 +1,6 @@
 import datetime
 
-from hootingyard.index.match_transcripts_to_scripts import extract_date_from_string
+from hootingyard.utils.date_utils import extract_date_from_string
 
 
 def test_extract_date_from_string0():

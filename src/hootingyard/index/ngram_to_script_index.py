@@ -1,6 +1,6 @@
 import logging
 import pickle
-from typing import Callable, Set, Tuple
+from typing import Callable
 
 log = logging.getLogger(__name__)
 
@@ -12,12 +12,12 @@ def save_ngram_to_script_index(data: dict):
         pickle.dump(data, index_file)
 
 
-def ngram_to_script_index() -> Callable[[str], Set[str]]:
+def ngram_to_script_index() -> Callable[[str], set[str]]:
     with open(ngram_to_story_index_file(), "rb") as index_file:
         index = pickle.load(index_file)
         log.warning(f"Loaded {len(index)} keys.")
 
-    def get_index_items(hashed_ngram: str) -> Set[str]:
+    def get_index_items(hashed_ngram: str) -> set[str]:
         return set(index.get(hashed_ngram, []))
 
     return get_index_items

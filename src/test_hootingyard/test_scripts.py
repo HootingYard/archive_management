@@ -5,9 +5,9 @@ from hootingyard.config.directories import get_big_book_scripts_dirctory
 from hootingyard.index.story import Story
 from hootingyard.script.generators import get_scripts
 from hootingyard.script.script import (
-    get_id_from_filename,
     Script,
     get_date_from_filename,
+    get_id_from_filename,
 )
 
 
@@ -40,4 +40,4 @@ def test_get_story_from_generator():
     first_script = next(get_scripts())
     first_story = first_script.get_story()
 
-    assert first_story.title == 'A Hooting Yard Primer'
+    assert first_story.title == "A Hooting Yard Primer"

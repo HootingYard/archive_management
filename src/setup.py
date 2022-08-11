@@ -1,11 +1,11 @@
 import setuptools
 
-with open("README.md", "r") as fh:
+with open("README.md") as fh:
     long_description = fh.read()
 
 try:
     REQUIREMENTS = list(open("requirements.txt").read().splitlines())
-except IOError:
+except OSError:
     REQUIREMENTS = []
 
 setuptools.setup(

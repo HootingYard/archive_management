@@ -1,16 +1,13 @@
-import os
 import logging
-from typing import Iterator
+import os
+from collections.abc import Iterator
 
 from hootingyard.config.directories import (
     get_big_book_scripts_dirctory,
-    get_external_scripts_directory,
 )
 from hootingyard.index.story import Story
 from hootingyard.script.script import (
     Script,
-    get_id_from_filename,
-    NotAScript,
     get_script_from_file_path,
 )
 

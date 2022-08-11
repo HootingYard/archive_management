@@ -1,5 +1,5 @@
-from pathlib import Path
 import re
+from pathlib import Path
 
 new_head = """<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"

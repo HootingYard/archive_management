@@ -1,6 +1,7 @@
 import os
+from collections.abc import Iterator, Mapping
 from dataclasses import dataclass
-from typing import List, Iterator, Any, Mapping
+from typing import Any
 
 import yaml
 
@@ -11,7 +12,7 @@ from hootingyard.index.story import Story
 @dataclass
 class StoryInfo:
     story: Story
-    ngrams: List[str]
+    ngrams: list[str]
     word_count: int
 
     @classmethod

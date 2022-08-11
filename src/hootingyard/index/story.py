@@ -1,7 +1,7 @@
-import re
-from dataclasses import dataclass
 import datetime
-from typing import Iterator
+import re
+from collections.abc import Iterator
+from dataclasses import dataclass
 
 
 class InvalidStory(RuntimeError):
@@ -26,12 +26,12 @@ class Story:
             raise InvalidStory
 
     def _word_iterator(self) -> Iterator[str]:
-        yield from re.split("[\s]+", self.title)
-        yield from re.split("[\s]+", self.text)
+        yield from re.split(r"[\s]+", self.title)
+        yield from re.split(r"[\s]+", self.text)
 
     def word_iterator(self) -> Iterator[str]:
         for w in self._word_iterator():
-            yield from re.findall("([a-zA-Z\-']+)", w)
+            yield from re.findall(r"([a-zA-Z\-']+)", w)
 
     def lowercase_word_iterator(self) -> Iterator[str]:
         return (w.lower() for w in self.word_iterator())

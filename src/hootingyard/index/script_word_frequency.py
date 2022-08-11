@@ -1,8 +1,8 @@
 import logging
 import os
 from collections import Counter
+from collections.abc import Iterator, Mapping
 from typing import Callable
-from typing import Iterator, Mapping
 
 import yaml
 

@@ -2,16 +2,17 @@ import logging
 import math
 import os
 import time
+from collections.abc import Iterator, Mapping
 from dataclasses import dataclass
-from typing import List, Optional, Mapping, Any, Iterator, DefaultDict, Set
+from typing import Any, Optional
 
 import yaml
 
 from hootingyard.audio.audio_file import AudioFile, get_audio_file_by_id
 from hootingyard.config.directories import get_refined_show_index_directory
 from hootingyard.config.files import (
-    get_transcript_to_script_match_files,
     get_refined_show_contents_file,
+    get_transcript_to_script_match_files,
 )
 from hootingyard.index.story_info import StoryInfo, get_story_info_by_id
 from hootingyard.utils.date_utils import extract_date_from_string
@@ -59,17 +60,7 @@ def refine_show(id: str, matches):
     return {"id": id, "stories": list(pick_matches(matches))}
 
 
-def main():
-    for file_path in get_transcript_to_script_match_files():
-        log.info(f"Loading {file_path}.")
-        with open(file_path) as matches_file:
-            matches = yaml.safe_load(matches_file)
-        refined = refine_show(**matches)
-        id = matches["id"]
-        log.info(f"Refining {id}")
-        output_path = get_refined_show_contents_file(id)
-        with open(output_path, "w") as output_file:
-            yaml.safe_dump(refined, output_file)
+
 
 
 @dataclass
@@ -91,10 +82,10 @@ class StoryInShow:
 @dataclass
 class RefinedShow:
     id: str
-    stories: List[StoryInShow]
+    stories: list[StoryInShow]
 
     @classmethod
-    def from_dict(cls, id: str, stories: List[Mapping[str, Any]]):
+    def from_dict(cls, id: str, stories: list[Mapping[str, Any]]):
         stories_in_show = []
 
         next_story: Optional[StoryInShow] = None
@@ -109,9 +100,9 @@ class RefinedShow:
     def get_audio_file(self) -> AudioFile:
         return get_audio_file_by_id(self.id)
 
-    def get_stories_in_order_of_length(self) -> List[StoryInfo]:
+    def get_stories_in_order_of_length(self) -> list[StoryInfo]:
         return sorted(
-            [s.get_story_info() for s in self.stories],
+            (s.get_story_info() for s in self.stories),
             key=lambda s: s.word_count,
             reverse=True,
         )
@@ -148,13 +139,13 @@ class RefinedShow:
         return int(math.floor(self.get_audio_file().get_metadata().info.time_secs))
 
     def get_title_and_text(self) -> str:
-        story_titles_and_text: List[str] = [
+        story_titles_and_text: list[str] = [
             s.get_story_info().get_title_and_text() for s in self.stories
         ]
         return "\n\n".join(story_titles_and_text)
 
     def get_toc(self):
-        toc_lines: List[str] = [
+        toc_lines: list[str] = [
             f"{s.get_story_info().story.title} - {s.get_time_code_mmss()}"
             for s in self.stories
         ]
@@ -174,6 +165,18 @@ def get_all_refined_shows() -> Iterator[RefinedShow]:
         id, _ = filename.rsplit(".", maxsplit=1)
         yield get_refined_index_by_id(id)
 
+
+def main():
+    for file_path in get_transcript_to_script_match_files():
+        log.info(f"Loading {file_path}.")
+        with open(file_path) as matches_file:
+            matches = yaml.safe_load(matches_file)
+        refined = refine_show(**matches)
+        id = matches["id"]
+        log.info(f"Refining {id}")
+        output_path = get_refined_show_contents_file(id)
+        with open(output_path, "w") as output_file:
+            yaml.safe_dump(refined, output_file)
 
 if __name__ == "__main__":
     logging.basicConfig()

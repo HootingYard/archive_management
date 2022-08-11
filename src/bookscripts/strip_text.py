@@ -11,15 +11,14 @@ The JSON format is
         "text":  "post text in a single line with, optionally with no punctuation" }
 """
 
-import sys
-import re
 import json
-import lxml.html
+import re
+import sys
+from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from pathlib import Path
+
 import lxml.html
 from lxml.html import HtmlElement
-from argparse import ArgumentParser, RawDescriptionHelpFormatter
-from typing import Dict
 
 __all__ = []
 
@@ -71,7 +70,7 @@ def run(
             print(xhtml_path)
 
         html: HtmlElement = lxml.html.parse(str(xhtml_path)).getroot()
-        data: Dict[str, str] = {}
+        data: dict[str, str] = {}
 
         date = element_text(html, '//p[@class="postwebpage"]/a')
         if not date:

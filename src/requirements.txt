@@ -10,4 +10,6 @@ mutagen
 internetarchive
 eyed3
 google-api-python-client
+openapi
+wandb
 

@@ -1,8 +1,9 @@
+import datetime
 import logging
 import os
-import datetime
+from collections.abc import Iterator
 from dataclasses import dataclass
-from typing import Iterator, Tuple, Optional
+from typing import Optional
 
 import dateparser
 
@@ -32,7 +33,7 @@ def get_archive_files(
                 yield os.path.join(root, f)
 
 
-def get_show_archives(archive_root) -> Iterator[Tuple[int, str]]:
+def get_show_archives(archive_root) -> Iterator[tuple[int, str]]:
     for year in range(2004, 2020):
         year_root = os.path.join(archive_root, str(year))
         for path in get_archive_files(year_root):
@@ -56,9 +57,9 @@ def guess_date(year, date_string):
         return d.date()
 
     if len(date_string) == 8:
-        yyyy, mm, dd = [
+        yyyy, mm, dd = (
             int(x) for x in [date_string[:4], date_string[4:6], date_string[6:]]
-        ]
+        )
         assert yyyy == year
         return datetime.date(yyyy, mm, dd)
 
@@ -93,7 +94,7 @@ def extract_date(filename: str, year: int) -> datetime.date:
 
 
 @dataclass
-class AudioAndTranscript(object):
+class AudioAndTranscript:
     audio_file_path: str
     transcript: Optional[Transcript]
 

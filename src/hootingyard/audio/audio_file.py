@@ -1,13 +1,13 @@
 import os
+from collections.abc import Iterator
 from dataclasses import dataclass
-from typing import Iterator
 
 import eyed3
 import eyed3.mp3
 
 from hootingyard.config.files import (
-    get_audio_file_path_by_id,
     get_audio_file_name_iterator,
+    get_audio_file_path_by_id,
 )
 
 

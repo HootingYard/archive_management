@@ -3,19 +3,17 @@ Hooting Yard Indexes API.
 """
 import functools
 from collections import defaultdict
+from collections.abc import Iterator, Mapping
 from dataclasses import dataclass
-from typing import Iterator, DefaultDict, Mapping, Set
+from typing import DefaultDict
 
 from hootingyard.index.refine_index import (
     RefinedShow,
-    get_refined_index_by_id,
     get_all_refined_shows,
+    get_refined_index_by_id,
 )
 from hootingyard.index.story import Story
 from hootingyard.index.story_info import StoryInfo, get_story_info_by_id
-
-
-from typing import Set, Mapping, Optional
 
 
 @dataclass(eq=True, frozen=True)
@@ -85,13 +83,13 @@ def get_all_show_information() -> Iterator[RefinedShow]:
     yield from get_all_refined_shows()
 
 
-@functools.lru_cache()
-def get_story_to_show_index() -> Mapping[str, Set[str]]:
+@functools.lru_cache
+def get_story_to_show_index() -> Mapping[str, set[str]]:
     """
     Return a dict which maps story IDs to a set of show IDs. This function
     can be used to tell you which shows a story appeared in.
     """
-    cache: DefaultDict[str, Set[str]] = defaultdict(set)
+    cache: DefaultDict[str, set[str]] = defaultdict(set)
     for show in get_all_refined_shows():
         for story in show.stories:
             cache[story.story].add(show.id)

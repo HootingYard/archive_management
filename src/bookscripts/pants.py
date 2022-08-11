@@ -2,12 +2,11 @@
 """ This does its best to provide XHTML files with “smart quotes” and other typographical finaries.
     It does this by running 'smartypants' on it, and correcting the apostrophes it stuffs up."""
 
-from typing import List
-from pathlib import Path
-from argparse import ArgumentParser
 import re
+from argparse import ArgumentParser
+from pathlib import Path
 
-from smartypants import smartypants, convert_entities
+from smartypants import convert_entities, smartypants
 
 
 class Settings:
@@ -15,7 +14,7 @@ class Settings:
     update: bool
     force: bool
     dump: bool
-    files: List[Path]
+    files: list[Path]
 
 
 settings = Settings()
@@ -52,7 +51,7 @@ def main():
     run(args.files, args.dump, args.update)
 
 
-def run(files: List[Path], dump: bool, update: bool) -> None:
+def run(files: list[Path], dump: bool, update: bool) -> None:
     for file in files:
         if settings.verbose:
             print(file)

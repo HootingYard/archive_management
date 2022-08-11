@@ -3,16 +3,16 @@ import logging
 import math
 import os
 from collections import defaultdict
-from typing import DefaultDict, List
+from typing import DefaultDict
 
 import yaml
 
 from hootingyard.analysis.ngram import get_ngrams
-from hootingyard.config.directories import get_stories_dirctory, get_index_directory
+from hootingyard.config.directories import get_stories_dirctory
 from hootingyard.index.all_stories_iterator import all_stories_iterator
 from hootingyard.index.ngram_to_script_index import save_ngram_to_script_index
-from hootingyard.index.story_info import StoryInfo
 from hootingyard.index.script_word_frequency import script_word_frequency
+from hootingyard.index.story_info import StoryInfo
 from hootingyard.index.transcript_word_frequency import transcript_word_frequency
 
 log = logging.getLogger(__name__)
@@ -20,12 +20,12 @@ log = logging.getLogger(__name__)
 
 def main(min_ngrams_per_story=5, max_ngrams_per_story=400, ngram_length=3):
     stories_dirctory: str = get_stories_dirctory()
-    story_index: DefaultDict[int, List[str]] = defaultdict(list)
+    story_index: DefaultDict[int, list[str]] = defaultdict(list)
 
     script_word_frequency_function = script_word_frequency()
     transcript_word_frequency_function = transcript_word_frequency()
 
-    def ngram_filter_function(ngram: List[str]) -> bool:
+    def ngram_filter_function(ngram: list[str]) -> bool:
         return all(transcript_word_frequency_function(w) for w in ngram)
 
     for story in all_stories_iterator():
@@ -38,7 +38,7 @@ def main(min_ngrams_per_story=5, max_ngrams_per_story=400, ngram_length=3):
             max(min_ngrams_per_story, math.floor(word_count / 8)), max_ngrams_per_story
         )
 
-        ngrams: List[str] = get_ngrams(
+        ngrams: list[str] = get_ngrams(
             ngram_length=ngram_length,
             max_ngrams=ngram_count,
             wf_scoring_function=script_word_frequency_function,

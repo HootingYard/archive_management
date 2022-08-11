@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 from hootingyard.config.config import get_config
 
@@ -12,7 +13,7 @@ def get_keyml_root():
 
 
 def get_analysis_directory() -> str:
-    return get_config().analysis_directory
+    return Path(get_config().analysis_directory)
 
 
 def get_transcript_directory():
@@ -50,8 +51,13 @@ def get_matches_directory():
 def get_refined_show_index_directory():
     return os.path.join(get_index_directory(), "refined_show_index")
 
+
 def get_export_directory():
     return os.path.join(get_index_directory(), "export")
 
+
 def get_external_scripts_directory():
     return os.path.join(get_analysis_directory(), "external_data", "external_texts")
+
+def get_openai_training_directory():
+    return get_analysis_directory() / "training_data"

@@ -1,4 +1,4 @@
-from hootingyard.analysis.ngram import ngrams, score_ngrams, NgramWithScore, get_ngrams
+from hootingyard.analysis.ngram import NgramWithScore, get_ngrams, ngrams, score_ngrams
 
 
 def test_ngram1():
@@ -31,7 +31,7 @@ def test_ngram_alpha():
 def test_g_ngrams_with_words():
     source_text = "the time before time is a land we have forgotten".split(" ")
 
-    scoring_function = lambda x: len(x)
+    scoring_function = len
     filter_function = lambda x: True
 
     result = get_ngrams(

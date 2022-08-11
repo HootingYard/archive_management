@@ -12,23 +12,22 @@
           quotes, but I'm tired, just so tired.
 """
 
-import re
 import datetime
+import re
+from collections.abc import Iterator
 from datetime import datetime
 from html import escape
 from itertools import chain
 from mimetypes import guess_type
 from pathlib import Path
 from shutil import copyfile
-from typing import Iterator, NamedTuple, Tuple, Literal, Set, Dict
-from lxml.html.builder import H2, P, A, H1, CLASS
+from typing import Literal, NamedTuple
 
-from lxml.html import HtmlElement, parse, tostring, fromstring  # pip3 install lxml
+from lxml.html import HtmlElement, fromstring, parse, tostring  # pip3 install lxml
+from lxml.html.builder import CLASS, H1, H2, A, P
 from unidecode import unidecode  # pip3 install Unidecode
 
-from src.hootingyard.utils import pants
-from src.hootingyard.utils import update_bigbook_toc
-
+from src.hootingyard.utils import pants, update_bigbook_toc
 
 ADD_NEW_RESOURCE_FILES = True
 OVERWRITE_EXISTING_PAGES = False  # DON'T set this if you have edited the pages
@@ -55,7 +54,7 @@ class PostData(NamedTuple):
 
 
 def text_surgery(s: str) -> str:
-    """ Replace punctuation that looks bad in print form. """
+    """Replace punctuation that looks bad in print form."""
     s = s.replace(" - ", "—")  # Replace dashes that look horrible in print
     s = s.replace(" – ", "—")
     s = s.replace(" :", FrankColon)  # If it's worth doing, it's worth doing right :-|
@@ -130,7 +129,7 @@ def relative_to(link: str, base: str) -> str:
 
 
 def upto(limit: str, text: str) -> str:
-    """ return all the text up to the limit string """
+    """return all the text up to the limit string"""
     return text[0 : text.find(limit)]
 
 
@@ -164,7 +163,7 @@ def xhtml(div: HtmlElement, data: PostData) -> str:
 """
 
 
-MiscellaneousIndex: Dict[str, PostData] = {
+MiscellaneousIndex: dict[str, PostData] = {
     "terms.htm": PostData(
         datetime(2003, 1, 1),
         "miscellaneous",
@@ -320,8 +319,8 @@ MiscellaneousFiles = {
 }
 
 
-def unhelpful_index() -> Dict[str, PostData]:
-    index: Dict[str, PostData] = {}
+def unhelpful_index() -> dict[str, PostData]:
+    index: dict[str, PostData] = {}
     html: HtmlElement = parse(str(UnhelpfulIndex)).getroot()
     for a in elements(html, ".//div[@class='index']//a"):
         title = str(a.text_content())
@@ -334,8 +333,8 @@ def unhelpful_index() -> Dict[str, PostData]:
     return index
 
 
-def preamble_index() -> Dict[str, PostData]:
-    index: Dict[str, PostData] = {}
+def preamble_index() -> dict[str, PostData]:
+    index: dict[str, PostData] = {}
     for path in Archive.glob("???[0-9][0-9].htm"):
         href = path.name
         date = datetime.strptime(href, "%b%y.htm")
@@ -346,9 +345,9 @@ def preamble_index() -> Dict[str, PostData]:
     return index
 
 
-def miscellaneous_index() -> Dict[str, PostData]:
-    index: Dict[str, PostData] = MiscellaneousIndex
-    seen: Set[str] = set()
+def miscellaneous_index() -> dict[str, PostData]:
+    index: dict[str, PostData] = MiscellaneousIndex
+    seen: set[str] = set()
     for html, first_posting in chain(posts(), quotes(), preambles()):
         for a in elements(html, ".//a"):
             href = a.get("href")
@@ -365,13 +364,13 @@ def miscellaneous_index() -> Dict[str, PostData]:
 # ---------------------------------------------------------------------------------------------
 
 
-def months() -> Iterator[Tuple[Path, HtmlElement]]:
+def months() -> Iterator[tuple[Path, HtmlElement]]:
     for path in Archive.glob("???[0-9][0-9].htm"):
         html: HtmlElement = parse(str(path)).getroot()
         yield path, html
 
 
-def posts() -> Iterator[Tuple[HtmlElement, PostData]]:
+def posts() -> Iterator[tuple[HtmlElement, PostData]]:
     for path, html in months():
         for post in elements(html, ".//div[@class='post']"):
             a = element(post, ".//a[@name]")
@@ -379,7 +378,7 @@ def posts() -> Iterator[Tuple[HtmlElement, PostData]]:
             yield post, Index[href]
 
 
-def quotes() -> Iterator[Tuple[HtmlElement, PostData]]:
+def quotes() -> Iterator[tuple[HtmlElement, PostData]]:
     for path, html in months():
         for day in elements(html, './/div[@class="day"]'):
             a = element(day, "h1/a")
@@ -388,13 +387,13 @@ def quotes() -> Iterator[Tuple[HtmlElement, PostData]]:
                 yield quote, Index[href]
 
 
-def preambles() -> Iterator[Tuple[HtmlElement, PostData]]:
+def preambles() -> Iterator[tuple[HtmlElement, PostData]]:
     for path, html in months():
         header = element(html, './/div[@class="header"]')
         yield header, Index[path.name]
 
 
-def miscellany() -> Iterator[Tuple[HtmlElement, PostData]]:
+def miscellany() -> Iterator[tuple[HtmlElement, PostData]]:
     for file in chain(MiscellaneousFiles, MiscellaneousIndex):
         path = Archive / file
         html: HtmlElement = parse(str(path)).getroot()
@@ -404,7 +403,7 @@ def miscellany() -> Iterator[Tuple[HtmlElement, PostData]]:
         yield body, Index[file]
 
 
-Resources: Set[str] = set()
+Resources: set[str] = set()
 
 
 def copy_resource(date: datetime, file: str, source: Path, destination: Path) -> str:

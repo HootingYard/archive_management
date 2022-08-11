@@ -1,8 +1,8 @@
 import datetime
 import os
 import re
+from collections.abc import Iterator
 from dataclasses import dataclass
-from typing import Iterator, Tuple
 
 from hootingyard.config.directories import get_transcript_directory
 
@@ -11,12 +11,12 @@ MULTIPLIERS = [1, 60, 60 * 60]
 
 def convert_string_timecode_to_timedelta(inp: str) -> datetime.timedelta:
     seconds: int = sum(
-        [a * b for (a, b) in zip(MULTIPLIERS, [int(a) for a in inp.split(":")[::-1]])]
+        a * b for (a, b) in zip(MULTIPLIERS, [int(a) for a in inp.split(":")[::-1]])
     )
     return datetime.timedelta(seconds=seconds)
 
 
-def extract_speaker_and_timecode(inp: str) -> Tuple[str, datetime.timedelta]:
+def extract_speaker_and_timecode(inp: str) -> tuple[str, datetime.timedelta]:
     matches = re.findall("^([A-Za-z ]+)  ([0-9:]+)$", inp)
     for m in matches:
         return (m[0], convert_string_timecode_to_timedelta(m[1]))
@@ -30,8 +30,8 @@ class TranscriptParagraph:
     text: str
 
     def word_iterator(self) -> Iterator[str]:
-        for island in re.split("[\s]+", self.text):
-            yield from (w.lower() for w in re.findall("([a-zA-Z\-']+)", island))
+        for island in re.split(r"[\s]+", self.text):
+            yield from (w.lower() for w in re.findall(r"([a-zA-Z\-']+)", island))
 
 
 @dataclass

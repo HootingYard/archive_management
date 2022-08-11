@@ -2,10 +2,9 @@ import logging
 import pprint
 
 import internetarchive
-from internetarchive import upload, get_item, Item
+from internetarchive import Item, get_item, upload
 
 from hootingyard.api.stories import get_all_show_information
-from internetarchive.exceptions import ItemLocateError
 from hootingyard.index.refine_index import RefinedShow
 
 log = logging.getLogger(__name__)
