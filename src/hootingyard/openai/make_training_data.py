@@ -20,29 +20,28 @@ def format_story_text(text:str)->str:
 
 def make_training_data(training_file_path:Path):
 
-    used_prompts = set()
+
 
     training_file_path.parent.mkdir(exist_ok=True)
+    used_prompts = set()
     with training_file_path.open("w") as training_file:
         for si in get_story_infos():
-            if si.word_count > 250:
-                log.info(f"Skipping {si.story.title}")
+            if si.word_count > 350 or si.word_count < 50:
+                log.info(f"Skipping {si.story.title} - unsuitable length: {si.word_count}!")
                 continue
 
             story:Story = si.story
-            title:str = story.title
-            text:str = story.text
-
-
             if not story.title in used_prompts:
                 item = {
                     "prompt":format_prompt(story.title),
                     "completion":format_story_text(story.text)
                 }
                 log.info(f"Processing story: {story.title} {si.word_count} words")
+                used_prompts.add(story.title)
+
                 json.dump(item, training_file)
                 training_file.write("\n")
-                used_prompts.add(story.title)
+
 
 
 def main():

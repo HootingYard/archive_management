@@ -11,7 +11,7 @@ FINE_TINE_MODEL_ID:str = "davinci:ft-team-rocket-ltd-2022-08-10-23-16-36" # all 
 def main():
     result = openai.Completion.create(
         model=FINE_TUNE_MODEL_ID,
-        prompt="Dobson's Uncanny Gas Bill\n",
+        prompt="Crisis in Dawlish?\n",
         max_tokens=1024,
         temperature=0.95,
         n=1,
