@@ -5,15 +5,16 @@ import openai
 
 from hootingyard.config.config import get_config
 
-FINE_TUNE_MODEL_ID:str = 'ft-gWvovsDUGkvgKKrkJKz1s2db' # shorter dobson stories
-FINE_TINE_MODEL_ID:str = "davinci:ft-team-rocket-ltd-2022-08-10-23-16-36" # all shorter stories
+# FINE_TUNE_MODEL_ID:str = 'ft-gWvovsDUGkvgKKrkJKz1s2db' # shorter dobson stories
+# FINE_TUNE_MODEL_ID:str = "ft-3cdXuorPNCYSBM4WYUjEptC2" # all shorter stories
+FINE_TUNE_MODEL_ID:str = 'davinci:ft-team-rocket-ltd-2022-08-10-23-16-36'
 
 def main():
     result = openai.Completion.create(
         model=FINE_TUNE_MODEL_ID,
-        prompt="Crisis in Dawlish?\n",
+        prompt="Did Dobson really exist?\n",
         max_tokens=1024,
-        temperature=0.95,
+        temperature=0.90,
         n=1,
     )
     pprint.pprint(result)
